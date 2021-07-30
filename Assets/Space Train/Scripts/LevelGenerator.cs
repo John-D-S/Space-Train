@@ -96,15 +96,15 @@ namespace LevelGeneration
 			{
 				int halfPostition = Mathf.FloorToInt(levelLength * 0.5f);
 				//set the entrance of the left and right side of the level.
-				BoxSetTileType(new Vector2Int(levelWidth, halfPostition - 1), new Vector2Int(levelWidth, halfPostition + 1), TileType.Corridor);
+				BoxSetTileType(new Vector2Int(levelWidth - 1, halfPostition - 1), new Vector2Int(levelWidth - 1, halfPostition + 1), TileType.Corridor);
 				BoxSetTileType(new Vector2Int(0, halfPostition - 1), new Vector2Int(0, halfPostition + 1), TileType.Corridor);
 			}
 			else
 			{
-				int halfPostition = Mathf.RoundToInt(levelLength * 0.5f);
+				int halfPostition = Mathf.FloorToInt(levelLength * 0.5f);
 				//set the entrance of the left and right side of the level.
-				BoxSetTileType(new Vector2Int(levelWidth, halfPostition), new Vector2Int(levelWidth, halfPostition + 1), TileType.Corridor);
-				BoxSetTileType(new Vector2Int(0, halfPostition), new Vector2Int(0, halfPostition + 1), TileType.Corridor);
+				BoxSetTileType(new Vector2Int(levelWidth - 1, halfPostition -1), new Vector2Int(levelWidth - 1, halfPostition), TileType.Corridor);
+				BoxSetTileType(new Vector2Int(0, halfPostition - 1), new Vector2Int(0, halfPostition), TileType.Corridor);
 			}
 
 			//if the level's width is odd, add an entrance to the front and back that is 3 tiles long,
@@ -113,15 +113,15 @@ namespace LevelGeneration
 			{
 				int halfPosition = Mathf.FloorToInt(levelWidth * 0.5f);
 				//set the entrance of the front and back of the level
-				BoxSetTileType(new Vector2Int(halfPosition - 1, levelLength), new Vector2Int(halfPosition + 1, levelLength), TileType.Room);
-				BoxSetTileType(new Vector2Int(halfPosition - 1, 0), new Vector2Int(halfPosition + 1, 0), TileType.Room);
+				BoxSetTileType(new Vector2Int(halfPosition - 1, levelLength - 1), new Vector2Int(halfPosition + 1, levelLength - 1), TileType.Corridor);
+				BoxSetTileType(new Vector2Int(halfPosition - 1, 0), new Vector2Int(halfPosition + 1, 0), TileType.Corridor);
 			}
 			else
 			{
 				int halfPosition = Mathf.FloorToInt(levelWidth * 0.5f);
 				//set the entrance of the front and back of the level
-				BoxSetTileType(new Vector2Int(halfPosition - 1, levelLength), new Vector2Int(halfPosition + 1, levelLength), TileType.Room);
-				BoxSetTileType(new Vector2Int(halfPosition - 1, 0), new Vector2Int(halfPosition + 1, 0), TileType.Room);
+				BoxSetTileType(new Vector2Int(halfPosition - 1, levelLength - 1), new Vector2Int(halfPosition, levelLength - 1), TileType.Corridor);
+				BoxSetTileType(new Vector2Int(halfPosition - 1, 0), new Vector2Int(halfPosition, 0), TileType.Corridor);
 			}
 		}
 
