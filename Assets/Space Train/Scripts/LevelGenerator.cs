@@ -37,6 +37,8 @@ namespace LevelGeneration
 		[SerializeField] private int levelWidth = 8;
 
 		[SerializeField] private int minDistanceBetweenCorridors = 2;
+		[SerializeField] private int minDistanceBetweenCorridorAndLevelEdge = 2;
+		[SerializeField] private int maxCorridorLength = 6;
 
 		[SerializeField] private int targetNumberOfCorridors = 8;
 
@@ -148,6 +150,7 @@ namespace LevelGeneration
 				: Vector2Int.up;
 			bool roomInPositiveDirection = true;
 			bool roomInNegativeDirection = true;
+			int currentCorridorLength = 1;
 			//set the tile at _start position to be a Corridor.
 			levelTiles[_startPosition.x][_startPosition.y].tileType = TileType.Corridor;
 			//initialize the pointer and set it to _startPosition.
@@ -157,9 +160,10 @@ namespace LevelGeneration
 			while(roomInPositiveDirection)
 			{
 				pointer += positiveDirection;
-				if(PositionIsWithinLevel(pointer) && levelTiles[pointer.x][pointer.y].tileType != TileType.Corridor)
+				if(PositionIsWithinLevel(pointer) && levelTiles[pointer.x][pointer.y].tileType != TileType.Corridor && currentCorridorLength < maxCorridorLength)
 				{
 					levelTiles[pointer.x][pointer.y].tileType = TileType.Corridor;
+					currentCorridorLength++;
 				}
 				else
 				{
@@ -172,9 +176,10 @@ namespace LevelGeneration
 			while(roomInNegativeDirection)
 			{
 				pointer -= positiveDirection;
-				if(PositionIsWithinLevel(pointer) && levelTiles[pointer.x][pointer.y].tileType != TileType.Corridor)
+				if(PositionIsWithinLevel(pointer) && levelTiles[pointer.x][pointer.y].tileType != TileType.Corridor && currentCorridorLength < maxCorridorLength)
 				{
 					levelTiles[pointer.x][pointer.y].tileType = TileType.Corridor;
+					currentCorridorLength++;
 				}
 				else
 				{
@@ -200,7 +205,6 @@ namespace LevelGeneration
 					levelTiles[x].Add(new LevelTile(TileType.Empty));
 				}
 			}
-			AddEntrances();
 		}
 
 		/// <summary>
@@ -216,11 +220,11 @@ namespace LevelGeneration
 			{
 				for(int z = 0; z < levelLength; z++)
 				{
+					Vector2Int currentPosition = new Vector2Int(x, z);
 					if(levelTiles[x][z].tileType == TileType.Corridor)
 					{
-						Vector2Int currentPosition = new Vector2Int(x, z);
 						disallowedCorridorPositions.Add(currentPosition);
-						for(int i = 0; i < minDistanceBetweenCorridors; i++)
+						for(int i = 0; i < minDistanceBetweenCorridors + 1; i++)
 						{
 							Vector2Int leftPos = currentPosition + perpandicularAxisPosDirection * i;
 							Vector2Int rightPos = currentPosition - perpandicularAxisPosDirection * i;
@@ -234,8 +238,18 @@ namespace LevelGeneration
 							}
 						}
 					}
+					else
+					{
+						bool positionTooCloseToNearSide = !PositionIsWithinLevel(currentPosition + perpandicularAxisPosDirection * minDistanceBetweenCorridorAndLevelEdge);
+						bool positionTooCloseToFarSide = !PositionIsWithinLevel(currentPosition - perpandicularAxisPosDirection * minDistanceBetweenCorridorAndLevelEdge);
+						if(positionTooCloseToNearSide || positionTooCloseToFarSide)
+						{
+							disallowedCorridorPositions.Add(currentPosition);
+						}
+					}
 				}
 			}
+			
 			List<Vector2Int> allowedCorridorPositions = new List<Vector2Int>();
 			for(int x = 0; x < levelWidth; x++)
 			{
@@ -261,13 +275,19 @@ namespace LevelGeneration
 			{
 				//a list of positions where x axis coridors are allowed to be generated.
 				List<Vector2Int> allowedXAxisCorridorPositions = AllowedCorridorPositions(Axis.X);
-				GenerateCorridor(allowedXAxisCorridorPositions[Random.Range(0, allowedXAxisCorridorPositions.Count)], Axis.X);
+				if(allowedXAxisCorridorPositions.Count > 0)
+				{
+					GenerateCorridor(allowedXAxisCorridorPositions[Random.Range(0, allowedXAxisCorridorPositions.Count)], Axis.X);
+				}
 				i++;
 				if(i < targetNumberOfCorridors)
 				{
 					//a list of positions where z axis coridors are allowed to be generated.
 					List<Vector2Int> allowedZAxisCorridorPositions = AllowedCorridorPositions(Axis.Z);
-					GenerateCorridor(allowedZAxisCorridorPositions[Random.Range(0, allowedZAxisCorridorPositions.Count)], Axis.Z);
+					if(allowedZAxisCorridorPositions.Count > 0)
+					{
+						GenerateCorridor(allowedZAxisCorridorPositions[Random.Range(0, allowedZAxisCorridorPositions.Count)], Axis.Z);
+					}
 					i++;
 				}
 			}
@@ -309,6 +329,7 @@ namespace LevelGeneration
 		{
 			InitializeLevel();
 			GenerateCorridors();
+			AddEntrances();
 			InstantiateLevelObjects();
 		}
 		
