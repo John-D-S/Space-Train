@@ -778,7 +778,8 @@ MonoBehaviour:
   levelLength: 32
   levelWidth: 16
   minDistanceBetweenCorridors: 3
+  minDistanceBetweenCorridorAndLevelEdge: 3
   maxCorridorLength: 32
-  targetNumberOfCorridors: 12
+  targetNumberOfCorridors: 20
   roomPlaceHolder: {fileID: 5508030110544857821, guid: ce23cb6cf892184449266663dc7901d2, type: 3}
   corridorPlaceholder: {fileID: 8233647901940423318, guid: 113d0eef14a94e143b61c317e69f8c1d, type: 3}
