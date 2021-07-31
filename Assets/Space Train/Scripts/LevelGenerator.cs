@@ -34,13 +34,13 @@ namespace LevelGeneration
 
 	public class Room
 	{
-		public Room(int _roomID, List<Vector2Int> _occupiedTiles)
+		public Room(int _roomID, List<Vector2Int> _occupiedTilePositions)
 		{
-			_roomID = RoomID;
-			occupiedTiles = _occupiedTiles;
+			RoomID = _roomID;
+			occupiedTilePositions = _occupiedTilePositions;
 		}
 		public int RoomID { get; private set; }
-		public List<Vector2Int> occupiedTiles;
+		public List<Vector2Int> occupiedTilePositions;
 	}
 
 	public class LevelGenerator : MonoBehaviour
@@ -54,13 +54,13 @@ namespace LevelGeneration
 
 		[SerializeField] private int targetNumberOfCorridors = 8;
 
-		[SerializeField] private GameObject roomPlaceHolder;
-		[SerializeField] private GameObject corridorPlaceholder;
+		[SerializeField] private GameObject wallPlaceHolder;
+		[SerializeField] private GameObject floorPlaceHolder;
 		private List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
-		private List<Room> rooms;
+		private List<Room> rooms = new List<Room>();
 		
-		private List<GameObject> instantiatedLevelTiles = new List<GameObject>();
+		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
 
 		/// <summary>
 		/// returns a list of all the Vector2s contained within the box defined by _from and _to. (inclusive)
@@ -118,12 +118,15 @@ namespace LevelGeneration
 				List<Vector2Int> pointsAroundPosToCheck = PointsAroundPosition(positionToCheck);
 				foreach(Vector2Int position in pointsAroundPosToCheck)
 				{
-					LevelTile tileAtPos = levelTiles[position.x][position.y];
-					if(PositionIsWithinLevel(position) && !connectedLevelTilePositions.Contains(position) && tileAtPos.tileType == targetTileType && tileAtPos.roomID == targetRoomID)
+					if(PositionIsWithinLevel(position))
 					{
-						uncheckedPositions.Enqueue(position);
-						connectedLevelTilePositions.Add(position);
-					}	
+						LevelTile tileAtPos = levelTiles[position.x][position.y];
+						if(!connectedLevelTilePositions.Contains(position) && tileAtPos.tileType == targetTileType && tileAtPos.roomID == targetRoomID)
+						{
+							uncheckedPositions.Enqueue(position);
+							connectedLevelTilePositions.Add(position);
+						}
+					}
 				}
 			}
 
@@ -132,6 +135,7 @@ namespace LevelGeneration
 
 		private void SetRooms()
 		{
+			rooms.Clear();
 			int currentRoomID = 1;
 			for(int x = 0; x < levelWidth; x++)
 			{
@@ -139,7 +143,13 @@ namespace LevelGeneration
 				{
 					if(levelTiles[x][z].roomID == 0)
 					{
-						rooms.Add(new Room(currentRoomID, ConnectedLevelTilePositions(new Vector2Int(x, z))));
+						List<Vector2Int> connectedLevelTilePositions = ConnectedLevelTilePositions(new Vector2Int(x, z));
+						foreach(Vector2Int tilePosition in connectedLevelTilePositions)
+						{
+							levelTiles[tilePosition.x][tilePosition.y].roomID = currentRoomID;
+						}
+						rooms.Add(new Room(currentRoomID, connectedLevelTilePositions));
+						currentRoomID++;
 					}
 				}
 			}
@@ -384,31 +394,29 @@ namespace LevelGeneration
 
 		private void InstantiateLevelObjects()
 		{
-			foreach(GameObject levelTile in instantiatedLevelTiles)
+			foreach(GameObject levelTile in instantiatedLevelObjects)
 			{
 				Destroy(levelTile);
 			}
-			instantiatedLevelTiles.Clear();
-			for(int x = 0; x < levelWidth; x++)
+			instantiatedLevelObjects.Clear();
+			
+			foreach(Room room in rooms)
 			{
-				for(int z = 0; z < levelLength; z++)
+				foreach(Vector2Int position in room.occupiedTilePositions)
 				{
-					switch(levelTiles[x][z].tileType)
+					Vector3 floorPosition = new Vector3(position.x, 0, position.y);
+					instantiatedLevelObjects.Add(Instantiate(floorPlaceHolder, floorPosition, Quaternion.identity));
+					List<Vector2Int> pointsAroundPosition = PointsAroundPosition(position);
+					foreach(Vector2Int point in pointsAroundPosition)
 					{
-						case TileType.Corridor:
-							if(corridorPlaceholder)
+						if(PositionIsWithinLevel(point))
+						{
+							if(levelTiles[point.x][point.y].roomID != levelTiles[position.x][position.y].roomID)
 							{
-								instantiatedLevelTiles.Add(Instantiate(corridorPlaceholder, new Vector3(x, 0, z), Quaternion.identity));
+								Vector3 pointPosition = new Vector3(point.x, 0, point.y);
+								instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
 							}
-
-							break;
-						case TileType.Empty:
-							if(roomPlaceHolder)
-							{
-								instantiatedLevelTiles.Add(Instantiate(roomPlaceHolder, new Vector3(x, 0, z), Quaternion.identity));
-							}
-
-							break;
+						}
 					}
 				}
 			}
@@ -419,6 +427,7 @@ namespace LevelGeneration
 			InitializeLevel();
 			GenerateCorridors();
 			AddEntrances();
+			SetRooms();
 			InstantiateLevelObjects();
 		}
 		
