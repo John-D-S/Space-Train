@@ -409,13 +409,17 @@ namespace LevelGeneration
 					List<Vector2Int> pointsAroundPosition = PointsAroundPosition(position);
 					foreach(Vector2Int point in pointsAroundPosition)
 					{
+						Vector3 pointPosition = new Vector3(point.x, 0, point.y);
 						if(PositionIsWithinLevel(point))
 						{
 							if(levelTiles[point.x][point.y].roomID != levelTiles[position.x][position.y].roomID)
 							{
-								Vector3 pointPosition = new Vector3(point.x, 0, point.y);
 								instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
 							}
+						}
+						else
+						{
+							instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
 						}
 					}
 				}
