@@ -29,8 +29,20 @@ namespace LevelGeneration
 		}
 		
 		public TileType tileType = TileType.Empty;
+		public int roomID = 0;
 	}
-	
+
+	public class Room
+	{
+		public Room(int _roomID, List<Vector2Int> _occupiedTiles)
+		{
+			_roomID = RoomID;
+			occupiedTiles = _occupiedTiles;
+		}
+		public int RoomID { get; private set; }
+		public List<Vector2Int> occupiedTiles;
+	}
+
 	public class LevelGenerator : MonoBehaviour
 	{
 		[SerializeField] private int levelLength = 32;
@@ -45,7 +57,9 @@ namespace LevelGeneration
 		[SerializeField] private GameObject roomPlaceHolder;
 		[SerializeField] private GameObject corridorPlaceholder;
 		private List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
-
+		
+		private List<Room> rooms;
+		
 		private List<GameObject> instantiatedLevelTiles = new List<GameObject>();
 
 		/// <summary>
@@ -72,6 +86,8 @@ namespace LevelGeneration
 			return returnValue;
 		} 
 		
+		private List<Vector2Int> PointsAroundPosition(Vector2Int _position) => new List<Vector2Int>() {Vector2Int.up + _position, Vector2Int.right + _position, Vector2Int.down + _position, Vector2Int.left + _position};
+		
 		void BoxSetTileType(Vector2Int _from, Vector2Int _to, TileType _type)
 		{
 			List<Vector2Int> tilePositions = PositionsInBox(_from, _to);
@@ -83,6 +99,48 @@ namespace LevelGeneration
 				if(levelTiles.Count > x && levelTiles[x].Count > z && levelTiles[x][z].tileType != _type)
 				{
 					levelTiles[x][z].tileType = _type;
+				}
+			}
+		}
+		
+		private List<Vector2Int> ConnectedLevelTilePositions(Vector2Int _position)
+		{
+			TileType targetTileType = levelTiles[_position.x][_position.y].tileType;
+			int targetRoomID = levelTiles[_position.x][_position.y].roomID;
+			
+			Queue<Vector2Int> uncheckedPositions = new Queue<Vector2Int>();
+			List<Vector2Int> connectedLevelTilePositions = new List<Vector2Int>();
+			uncheckedPositions.Enqueue(_position);
+			connectedLevelTilePositions.Add(_position);
+			while(uncheckedPositions.Count > 0)
+			{
+				Vector2Int positionToCheck = uncheckedPositions.Dequeue();
+				List<Vector2Int> pointsAroundPosToCheck = PointsAroundPosition(positionToCheck);
+				foreach(Vector2Int position in pointsAroundPosToCheck)
+				{
+					LevelTile tileAtPos = levelTiles[position.x][position.y];
+					if(PositionIsWithinLevel(position) && !connectedLevelTilePositions.Contains(position) && tileAtPos.tileType == targetTileType && tileAtPos.roomID == targetRoomID)
+					{
+						uncheckedPositions.Enqueue(position);
+						connectedLevelTilePositions.Add(position);
+					}	
+				}
+			}
+
+			return connectedLevelTilePositions;
+		}
+
+		private void SetRooms()
+		{
+			int currentRoomID = 1;
+			for(int x = 0; x < levelWidth; x++)
+			{
+				for(int z = 0; z < levelLength; z++)
+				{
+					if(levelTiles[x][z].roomID == 0)
+					{
+						rooms.Add(new Room(currentRoomID, ConnectedLevelTilePositions(new Vector2Int(x, z))));
+					}
 				}
 			}
 		}
