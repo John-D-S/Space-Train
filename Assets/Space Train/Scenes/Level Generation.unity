@@ -780,6 +780,6 @@ MonoBehaviour:
   minDistanceBetweenCorridors: 3
   minDistanceBetweenCorridorAndLevelEdge: 3
   maxCorridorLength: 32
+  minDistanceBetweenDoors: 6
   targetNumberOfCorridors: 20
-  wallPlaceHolder: {fileID: 6065121446419011961, guid: 88b8ad0778d1efc4abe297f6306d3171, type: 3}
-  floorPlaceHolder: {fileID: 4972177422767711341, guid: 113d0eef14a94e143b61c317e69f8c1d, type: 3}
+  PlaceHolderRoomStyle: {fileID: 11400000, guid: d1d45741b26f44147873e4b2b92bcc48, type: 2}

@@ -16,31 +16,8 @@ namespace LevelGeneration
 	
 	public enum TileType
 	{
-		Room,
 		Corridor,
-		Empty
-	}
-	
-	public class LevelTile
-	{
-		public LevelTile(TileType _tileType)
-		{
-			tileType = _tileType;
-		}
-		
-		public TileType tileType = TileType.Empty;
-		public int roomID = 0;
-	}
-
-	public class Room
-	{
-		public Room(int _roomID, List<Vector2Int> _occupiedTilePositions)
-		{
-			RoomID = _roomID;
-			occupiedTilePositions = _occupiedTilePositions;
-		}
-		public int RoomID { get; private set; }
-		public List<Vector2Int> occupiedTilePositions;
+		Room
 	}
 
 	public class LevelGenerator : MonoBehaviour
@@ -51,16 +28,108 @@ namespace LevelGeneration
 		[SerializeField] private int minDistanceBetweenCorridors = 2;
 		[SerializeField] private int minDistanceBetweenCorridorAndLevelEdge = 2;
 		[SerializeField] private int maxCorridorLength = 6;
+		[SerializeField] private int minDistanceBetweenDoors = 6;
 
 		[SerializeField] private int targetNumberOfCorridors = 8;
 
-		[SerializeField] private GameObject wallPlaceHolder;
-		[SerializeField] private GameObject floorPlaceHolder;
+		[SerializeField] private RoomStyle PlaceHolderRoomStyle;
 		private List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
 		private List<Room> rooms = new List<Room>();
 		
 		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
+
+		public class LevelTile
+		{
+			public TileType tileType;
+			public Room room;
+			public int RoomID
+			{
+				get
+				{
+					if(room != null)
+					{
+						return room.RoomID;
+					}
+					else
+					{
+						return 0;
+					}
+				}
+			}
+			public Vector2Int PositionInGrid { get; private set; }
+			public TileEdge[] tileEdges = new TileEdge[4];
+
+			public RoomStyle RoomStyle => room.roomStyle;
+
+			public LevelTile(TileType _tileType, Vector2Int _positionInGrid)
+			{
+				tileType = _tileType;
+				PositionInGrid = _positionInGrid;
+			}
+			
+			public enum TileEdge
+			{
+				Empty,
+				Door,
+				Wall
+			}
+
+			public void InstantiateTileObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
+			{
+				RoomStyle usedRoomstyle = RoomStyle != null
+					? RoomStyle
+					: _defaultStyle;
+				Vector3 positionToInstantiate = _offset + new Vector3(PositionInGrid.x, 0, PositionInGrid.y);
+				_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Floor, positionToInstantiate, Quaternion.identity));
+				//instantiating the edgeObjects;
+				for(int i = 0; i < 4; i ++)
+				{
+					switch(tileEdges[i])
+					{
+						case TileEdge.Door:
+							_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Door, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+							break;
+						case TileEdge.Wall:
+							_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Wall, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+							break;
+						case TileEdge.Empty:
+							break;
+					}
+				}
+			}
+		}
+
+		public class Room
+		{
+			public Room(int _roomID, ref List<LevelTile> _occupiedTiles, RoomStyle _roomStyle)
+			{
+				RoomID = _roomID;
+				foreach(LevelTile tile in _occupiedTiles)
+				{
+					tile.room = this;
+				}
+				OccupiedTiles = _occupiedTiles;
+			}
+
+			public RoomStyle roomStyle;
+			public int RoomID { get; private set; }
+			public List<LevelTile> OccupiedTiles { get; private set; }
+
+			public List<Vector2Int> OccupiedTilePositions
+			{
+				get
+				{
+					List<Vector2Int> returnValue = new List<Vector2Int>();
+					foreach(LevelTile tile in OccupiedTiles)	
+					{
+						returnValue.Add(tile.PositionInGrid);
+					}
+
+					return returnValue;
+				}
+			}
+		}
 
 		/// <summary>
 		/// returns a list of all the Vector2s contained within the box defined by _from and _to. (inclusive)
@@ -106,7 +175,7 @@ namespace LevelGeneration
 		private List<Vector2Int> ConnectedLevelTilePositions(Vector2Int _position)
 		{
 			TileType targetTileType = levelTiles[_position.x][_position.y].tileType;
-			int targetRoomID = levelTiles[_position.x][_position.y].roomID;
+			int targetRoomID = levelTiles[_position.x][_position.y].RoomID;
 			
 			Queue<Vector2Int> uncheckedPositions = new Queue<Vector2Int>();
 			List<Vector2Int> connectedLevelTilePositions = new List<Vector2Int>();
@@ -121,7 +190,7 @@ namespace LevelGeneration
 					if(PositionIsWithinLevel(position))
 					{
 						LevelTile tileAtPos = levelTiles[position.x][position.y];
-						if(!connectedLevelTilePositions.Contains(position) && tileAtPos.tileType == targetTileType && tileAtPos.roomID == targetRoomID)
+						if(!connectedLevelTilePositions.Contains(position) && tileAtPos.tileType == targetTileType && tileAtPos.RoomID == targetRoomID)
 						{
 							uncheckedPositions.Enqueue(position);
 							connectedLevelTilePositions.Add(position);
@@ -141,14 +210,16 @@ namespace LevelGeneration
 			{
 				for(int z = 0; z < levelLength; z++)
 				{
-					if(levelTiles[x][z].roomID == 0)
+					if(levelTiles[x][z].RoomID == 0)
 					{
-						List<Vector2Int> connectedLevelTilePositions = ConnectedLevelTilePositions(new Vector2Int(x, z));
-						foreach(Vector2Int tilePosition in connectedLevelTilePositions)
+						List<LevelTile> connectedLevelTiles = new List<LevelTile>();
+						foreach(Vector2Int position in ConnectedLevelTilePositions(new Vector2Int(x, z)))
 						{
-							levelTiles[tilePosition.x][tilePosition.y].roomID = currentRoomID;
+							connectedLevelTiles.Add(levelTiles[position.x][position.y]);	
 						}
-						rooms.Add(new Room(currentRoomID, connectedLevelTilePositions));
+
+						Room newRoom = new Room(currentRoomID, ref connectedLevelTiles, PlaceHolderRoomStyle);
+						rooms.Add(newRoom);
 						currentRoomID++;
 					}
 				}
@@ -191,7 +262,6 @@ namespace LevelGeneration
 			{
 				GenerateCorridor(position, Axis.Z);
 			}
-			
 			
 			//if the level's width is odd, add an entrance to the front and back that is 3 tiles long,
 			//if its even, add an entrance that is 2 tiles long
@@ -301,7 +371,7 @@ namespace LevelGeneration
 				for(int z = 0; z < levelLength; z++)
 				{
 					//add another tile to each row of level tiles until levelWidth is reached.
-					levelTiles[x].Add(new LevelTile(TileType.Empty));
+					levelTiles[x].Add(new LevelTile(TileType.Room, new Vector2Int(x, z)));
 				}
 			}
 		}
@@ -392,6 +462,32 @@ namespace LevelGeneration
 			}
 		}
 
+		private void SetDoorTiles()
+		{
+			foreach(Room room in rooms)
+			{
+				List<Vector2Int> allowedDoorPositions = new List<Vector2Int>();
+				foreach(Vector2Int tilePosition in room.OccupiedTilePositions)
+				{
+					List<Vector2Int> pointsAroundTilePosition = PointsAroundPosition(tilePosition);
+					int numberOfDifferentNeighboringTiles = 0;
+					foreach(Vector2Int point in pointsAroundTilePosition)
+					{
+						//if the number of different neighboring tiles is greater than 1, the tilePosition is in the corner of the room.
+						if(levelTiles[tilePosition.x][tilePosition.y].RoomID != room.RoomID)
+						{
+							numberOfDifferentNeighboringTiles++;
+						}
+					}
+
+					if(numberOfDifferentNeighboringTiles == 1)
+					{
+						
+					}
+				}
+			}
+		}
+		
 		private void InstantiateLevelObjects()
 		{
 			foreach(GameObject levelTile in instantiatedLevelObjects)
@@ -402,26 +498,36 @@ namespace LevelGeneration
 			
 			foreach(Room room in rooms)
 			{
-				foreach(Vector2Int position in room.occupiedTilePositions)
+				foreach(Vector2Int position in room.OccupiedTilePositions)
 				{
 					Vector3 floorPosition = new Vector3(position.x, 0, position.y);
-					instantiatedLevelObjects.Add(Instantiate(floorPlaceHolder, floorPosition, Quaternion.identity));
+					//instantiatedLevelObjects.Add(Instantiate(floorPlaceHolder, floorPosition, Quaternion.identity));
 					List<Vector2Int> pointsAroundPosition = PointsAroundPosition(position);
-					foreach(Vector2Int point in pointsAroundPosition)
+					for(int i = 0; i < 4; i++)
 					{
-						Vector3 pointPosition = new Vector3(point.x, 0, point.y);
+						Vector2Int point = pointsAroundPosition[i];
 						if(PositionIsWithinLevel(point))
 						{
-							if(levelTiles[point.x][point.y].roomID != levelTiles[position.x][position.y].roomID)
+							if(levelTiles[point.x][point.y].RoomID != levelTiles[position.x][position.y].RoomID)
 							{
-								instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
+								levelTiles[position.x][position.y].tileEdges[i] = LevelTile.TileEdge.Wall;
+								//instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
 							}
 						}
 						else
 						{
-							instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
+							levelTiles[position.x][position.y].tileEdges[i] = LevelTile.TileEdge.Wall;
+							//instantiatedLevelObjects.Add(Instantiate(wallPlaceHolder, floorPosition, Quaternion.FromToRotation(Vector3.forward, pointPosition - floorPosition)));
 						}
 					}
+				}
+			}
+
+			foreach(List<LevelTile> levelTile in levelTiles)
+			{
+				foreach(LevelTile tile in levelTile)
+				{
+					tile.InstantiateTileObjects(gameObject.transform.position,  ref instantiatedLevelObjects, PlaceHolderRoomStyle);
 				}
 			}
 		}
@@ -438,6 +544,6 @@ namespace LevelGeneration
 		private void Start()
 		{
 			GenerateLevel();
-		}
+		}	
 	}
 }

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61eee2c4b1cd8724898254eb0e6a24b5, type: 3}
+  m_Name: DefaultRoom
+  m_EditorClassIdentifier: 
+  roomTag: Default
+  LinkableRoomTags:
+  - Default
+  floor: {fileID: 4972177422767711341, guid: 113d0eef14a94e143b61c317e69f8c1d, type: 3}
+  wall: {fileID: 6065121446419011961, guid: 88b8ad0778d1efc4abe297f6306d3171, type: 3}
+  door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}
