@@ -780,6 +780,6 @@ MonoBehaviour:
   minDistanceBetweenCorridors: 3
   minDistanceBetweenCorridorAndLevelEdge: 3
   maxCorridorLength: 32
-  minDistanceBetweenDoors: 6
+  minDistanceBetweenDoors: 10
   targetNumberOfCorridors: 20
   PlaceHolderRoomStyle: {fileID: 11400000, guid: d1d45741b26f44147873e4b2b92bcc48, type: 2}

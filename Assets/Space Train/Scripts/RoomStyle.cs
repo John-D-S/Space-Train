@@ -21,6 +21,6 @@ public class RoomStyle : ScriptableObject
     [SerializeField] private GameObject door;
     public GameObject Door
     {
-        get => Door;
+        get => door;
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +14,14 @@ namespace LevelGeneration
 	{
 		X,
 		Z
+	}
+
+	public enum Direction
+	{
+		Zpos,
+		Xpos,
+		Zneg,
+		Xneg
 	}
 	
 	public enum TileType
@@ -33,9 +43,9 @@ namespace LevelGeneration
 		[SerializeField] private int targetNumberOfCorridors = 8;
 
 		[SerializeField] private RoomStyle PlaceHolderRoomStyle;
-		private List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
+		[System.NonSerialized] public List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
-		private List<Room> rooms = new List<Room>();
+		[System.NonSerialized] public List<Room> rooms = new List<Room>();
 		
 		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
 
@@ -75,6 +85,57 @@ namespace LevelGeneration
 				Wall
 			}
 
+			public int RoomIDOnOtherSideOfDoor()
+			{
+				for(int i = 0; i < 0; i++)
+				{
+					if(tileEdges[i] == TileEdge.Door)
+					{
+						Vector2Int posOnOtherSideOfDoor = PosInOneUnitInDirection((Direction) i);
+						return room.levelGenerator.levelTiles[posOnOtherSideOfDoor.x][posOnOtherSideOfDoor.y].RoomID;
+					}
+				}
+				return RoomID;
+			}
+			
+			public Vector2Int PosInOneUnitInDirection(Direction _direction)
+			{
+				switch(_direction)
+				{
+					case Direction.Zpos:
+						return PositionInGrid + Vector2Int.up;
+					case Direction.Xpos:
+						return PositionInGrid + Vector2Int.right;
+					case Direction.Zneg:
+						return PositionInGrid + Vector2Int.down;
+					case Direction.Xneg:
+						return PositionInGrid + Vector2Int.left;
+				}
+				return PositionInGrid;
+			}
+			
+			public bool TryPlaceDoor(Direction _direction)
+			{
+				if(tileEdges[(int) _direction] == TileEdge.Wall)
+				{
+					Vector2Int connectedDoorTilePos = PosInOneUnitInDirection(_direction);
+					if(room.levelGenerator.PositionIsWithinLevel(connectedDoorTilePos))
+					{
+						SetEdge(TileEdge.Door, _direction);				
+						//this is the opposite of _direction. for example, if _direction is Xneg, otherDoorDirection will be Xpos;
+						Direction otherDoorDirection = (Direction)(((int)_direction + 2) % 4);
+						room.levelGenerator.levelTiles[connectedDoorTilePos.x][connectedDoorTilePos.y].SetEdge(TileEdge.Door, otherDoorDirection);
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			public void SetEdge(TileEdge _edge, Direction _direction)
+			{
+				tileEdges[(int)_direction] = _edge;
+			}
+			
 			public void InstantiateTileObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
 			{
 				if(RoomStyle == null)
@@ -106,8 +167,9 @@ namespace LevelGeneration
 
 		public class Room
 		{
-			public Room(int _roomID, ref List<LevelTile> _occupiedTiles, RoomStyle _roomStyle)
+			public Room(int _roomID, ref List<LevelTile> _occupiedTiles, RoomStyle _roomStyle, LevelGenerator _levelGenerator)
 			{
+				levelGenerator = _levelGenerator;
 				RoomID = _roomID;
 				foreach(LevelTile tile in _occupiedTiles)
 				{
@@ -117,10 +179,11 @@ namespace LevelGeneration
 				roomStyle = _roomStyle;
 			}
 
+			public LevelGenerator levelGenerator;
 			public RoomStyle roomStyle;
 			public int RoomID { get; private set; }
 			public List<LevelTile> OccupiedTiles { get; private set; }
-
+			
 			public List<Vector2Int> OccupiedTilePositions
 			{
 				get
@@ -223,7 +286,7 @@ namespace LevelGeneration
 							connectedLevelTiles.Add(levelTiles[position.x][position.y]);	
 						}
 
-						Room newRoom = new Room(currentRoomID, ref connectedLevelTiles, PlaceHolderRoomStyle);
+						Room newRoom = new Room(currentRoomID, ref connectedLevelTiles, PlaceHolderRoomStyle, this);
 						rooms.Add(newRoom);
 						currentRoomID++;
 					}
@@ -472,22 +535,85 @@ namespace LevelGeneration
 		/// <summary>
 		/// will replace a wall at the position with a door. if the position is
 		/// </summary>
-		private void TryAddDoor(Vector2Int _doorPosition)
-		{
-			LevelTile levelTile = levelTiles[_doorPosition.x][_doorPosition.y];
-			Room tileRoom = levelTile.room;
-			List<int> potentialWallPositions = new List<int>();
-			foreach(LevelTile.TileEdge tileEdge in levelTile.tileEdges)
-			{
-				
-			}
-
-			List<Vector2Int> Positions;
-		}
-		
 		private void SetDoorTiles()
 		{
-			
+			foreach(Room room in rooms)
+			{
+				//the int in this dictionary refers to the id of the room on the other side of the door on this tile.
+				Dictionary<int, List<LevelTile>> tilesWithDoorsByConnectedRoomID = new Dictionary<int, List<LevelTile>>();
+				List<LevelTile> tilesWithDoors = new List<LevelTile>();
+				List<LevelTile> tilesWithWalls = new List<LevelTile>();
+				foreach(LevelTile tile in room.OccupiedTiles)
+				{
+					foreach(LevelTile.TileEdge tileEdge in tile.tileEdges)
+					{
+						if(tileEdge == LevelTile.TileEdge.Door && !tilesWithDoors.Contains(tile))
+						{
+							int roomIDOnOtherSideOfDoor = tile.RoomIDOnOtherSideOfDoor();
+							if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfDoor))
+							{
+								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfDoor] = new List<LevelTile>();
+							}
+							tilesWithDoorsByConnectedRoomID[tile.RoomIDOnOtherSideOfDoor()].Add(tile);
+							tilesWithDoors.Add(tile);
+						}
+						if(tileEdge == LevelTile.TileEdge.Wall && !tilesWithWalls.Contains(tile))
+						{
+							tilesWithWalls.Add(tile);	
+						}
+					}
+				}
+				//this shuffles the list (hopefully)
+				tilesWithWalls.OrderBy(x => Guid.NewGuid()).ToList();
+				foreach(LevelTile tile in tilesWithWalls)
+				{
+					List<Direction> possibleDirectionsToPlaceDoor = new List<Direction>();
+					for(int i = 0; i < 4; i++)
+					{
+						if(tile.tileEdges[i] == LevelTile.TileEdge.Wall)
+						{
+							possibleDirectionsToPlaceDoor.Add((Direction)i);
+						}
+					}
+
+					
+					Direction direcitonToPlaceDoor = possibleDirectionsToPlaceDoor[Random.Range(0, possibleDirectionsToPlaceDoor.Count)];
+					Vector2Int posOnOtherSideOfNewDoor = tile.PosInOneUnitInDirection(direcitonToPlaceDoor);
+					if(PositionIsWithinLevel(posOnOtherSideOfNewDoor))
+					{
+						int roomIDOnOtherSideOfNewPlaceDoor = levelTiles[posOnOtherSideOfNewDoor.x][posOnOtherSideOfNewDoor.y].RoomID;
+						if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfNewPlaceDoor))
+						{
+							if(tile.TryPlaceDoor(direcitonToPlaceDoor))
+							{
+								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor] = new List<LevelTile>();
+								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor].Add(tile);
+								//tilesWithDoors.Add(tile);
+							}
+						}
+						else
+						{
+							bool farEnoughFromAllDoors = true;
+							foreach(LevelTile tileWithDoor in tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor])
+							{
+								if(TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid) < minDistanceBetweenDoors)
+								{
+									farEnoughFromAllDoors = false;
+									break;
+								}
+							}
+							if(farEnoughFromAllDoors)
+							{
+								if(tile.TryPlaceDoor(direcitonToPlaceDoor))
+								{
+									tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor].Add(tile);
+									//tilesWithDoors.Add(tile);
+								}	
+							}
+						}	
+					}
+				}
+			}
 		}
 		
 		private void InstantiateLevelObjects()
@@ -525,6 +651,8 @@ namespace LevelGeneration
 				}
 			}
 
+			SetDoorTiles();
+			
 			foreach(List<LevelTile> levelTile in levelTiles)
 			{
 				foreach(LevelTile tile in levelTile)
