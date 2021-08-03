@@ -77,6 +77,10 @@ namespace LevelGeneration
 
 			public void InstantiateTileObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
 			{
+				if(RoomStyle == null)
+				{
+					Debug.Log("roomstyle is null");
+				}
 				RoomStyle usedRoomstyle = RoomStyle != null
 					? RoomStyle
 					: _defaultStyle;
@@ -110,6 +114,7 @@ namespace LevelGeneration
 					tile.room = this;
 				}
 				OccupiedTiles = _occupiedTiles;
+				roomStyle = _roomStyle;
 			}
 
 			public RoomStyle roomStyle;
@@ -130,7 +135,7 @@ namespace LevelGeneration
 				}
 			}
 		}
-
+		
 		/// <summary>
 		/// returns a list of all the Vector2s contained within the box defined by _from and _to. (inclusive)
 		/// </summary>
@@ -461,31 +466,28 @@ namespace LevelGeneration
 				}
 			}
 		}
+		
+		private int TaxiCabDistance(Vector2Int _from, Vector2Int _to) => Mathf.Abs(_from.x - _to.x) + Mathf.Abs(_from.y - _to.y);
+		
+		/// <summary>
+		/// will replace a wall at the position with a door. if the position is
+		/// </summary>
+		private void TryAddDoor(Vector2Int _doorPosition)
+		{
+			LevelTile levelTile = levelTiles[_doorPosition.x][_doorPosition.y];
+			Room tileRoom = levelTile.room;
+			List<int> potentialWallPositions = new List<int>();
+			foreach(LevelTile.TileEdge tileEdge in levelTile.tileEdges)
+			{
+				
+			}
 
+			List<Vector2Int> Positions;
+		}
+		
 		private void SetDoorTiles()
 		{
-			foreach(Room room in rooms)
-			{
-				List<Vector2Int> allowedDoorPositions = new List<Vector2Int>();
-				foreach(Vector2Int tilePosition in room.OccupiedTilePositions)
-				{
-					List<Vector2Int> pointsAroundTilePosition = PointsAroundPosition(tilePosition);
-					int numberOfDifferentNeighboringTiles = 0;
-					foreach(Vector2Int point in pointsAroundTilePosition)
-					{
-						//if the number of different neighboring tiles is greater than 1, the tilePosition is in the corner of the room.
-						if(levelTiles[tilePosition.x][tilePosition.y].RoomID != room.RoomID)
-						{
-							numberOfDifferentNeighboringTiles++;
-						}
-					}
-
-					if(numberOfDifferentNeighboringTiles == 1)
-					{
-						
-					}
-				}
-			}
+			
 		}
 		
 		private void InstantiateLevelObjects()
