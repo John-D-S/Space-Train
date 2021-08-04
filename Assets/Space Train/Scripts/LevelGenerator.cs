@@ -273,7 +273,7 @@ namespace LevelGeneration
 		private void SetRooms()
 		{
 			rooms.Clear();
-			int currentRoomID = 1;
+			int currentRoomID = 2;
 			for(int x = 0; x < levelWidth; x++)
 			{
 				for(int z = 0; z < levelLength; z++)
@@ -564,7 +564,7 @@ namespace LevelGeneration
 					}
 				}
 				//this shuffles the list (hopefully)
-				tilesWithWalls.OrderBy(x => Guid.NewGuid()).ToList();
+				tilesWithWalls = tilesWithWalls.OrderBy( x => Random.value ).ToList( );
 				foreach(LevelTile tile in tilesWithWalls)
 				{
 					List<Direction> possibleDirectionsToPlaceDoor = new List<Direction>();
@@ -575,29 +575,30 @@ namespace LevelGeneration
 							possibleDirectionsToPlaceDoor.Add((Direction)i);
 						}
 					}
-
 					
 					Direction direcitonToPlaceDoor = possibleDirectionsToPlaceDoor[Random.Range(0, possibleDirectionsToPlaceDoor.Count)];
 					Vector2Int posOnOtherSideOfNewDoor = tile.PosInOneUnitInDirection(direcitonToPlaceDoor);
 					if(PositionIsWithinLevel(posOnOtherSideOfNewDoor))
 					{
-						int roomIDOnOtherSideOfNewPlaceDoor = levelTiles[posOnOtherSideOfNewDoor.x][posOnOtherSideOfNewDoor.y].RoomID;
-						if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfNewPlaceDoor))
+						int roomIDOnOtherSideOfNewDoor = levelTiles[posOnOtherSideOfNewDoor.x][posOnOtherSideOfNewDoor.y].RoomID;
+						if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfNewDoor))
 						{
 							if(tile.TryPlaceDoor(direcitonToPlaceDoor))
 							{
-								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor] = new List<LevelTile>();
-								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor].Add(tile);
+								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor] = new List<LevelTile>();
+								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor].Add(tile);
 								//tilesWithDoors.Add(tile);
 							}
 						}
 						else
 						{
 							bool farEnoughFromAllDoors = true;
-							foreach(LevelTile tileWithDoor in tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor])
+							foreach(LevelTile tileWithDoor in tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor])
 							{
+								
 								if(TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid) < minDistanceBetweenDoors)
 								{
+									Debug.Log($"From: {tile.PositionInGrid}, To: {tileWithDoor.PositionInGrid}, Distance: {TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid)}");
 									farEnoughFromAllDoors = false;
 									break;
 								}
@@ -606,7 +607,7 @@ namespace LevelGeneration
 							{
 								if(tile.TryPlaceDoor(direcitonToPlaceDoor))
 								{
-									tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewPlaceDoor].Add(tile);
+									tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor].Add(tile);
 									//tilesWithDoors.Add(tile);
 								}	
 							}
