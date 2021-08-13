@@ -449,10 +449,13 @@ namespace LevelGeneration
 		/// </summary>
 		private List<Vector2Int> AllowedCorridorPositions(Axis _axis)
 		{
+			// a list of positions that corridors cannot generate.
 			List<Vector2Int> disallowedCorridorPositions = new List<Vector2Int>();
+			// the vector2 in the direction perpandicular to _axis
 			Vector2Int perpandicularAxisPosDirection = _axis == Axis.X
 				? Vector2Int.up
 				: Vector2Int.right;
+			// 
 			for(int x = 0; x < levelWidth; x++)
 			{
 				for(int z = 0; z < levelLength; z++)
@@ -530,6 +533,9 @@ namespace LevelGeneration
 			}
 		}
 		
+		/// <summary>
+		/// returns the taxicab distance between _from and _to
+		/// </summary>
 		private int TaxiCabDistance(Vector2Int _from, Vector2Int _to) => Mathf.Abs(_from.x - _to.x) + Mathf.Abs(_from.y - _to.y);
 		
 		/// <summary>
@@ -563,6 +569,7 @@ namespace LevelGeneration
 						}
 					}
 				}
+				//Debug.Log(tilesWithDoors.Count);
 				//this shuffles the list (hopefully)
 				tilesWithWalls = tilesWithWalls.OrderBy( x => Random.value ).ToList( );
 				foreach(LevelTile tile in tilesWithWalls)
@@ -598,7 +605,7 @@ namespace LevelGeneration
 								
 								if(TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid) < minDistanceBetweenDoors)
 								{
-									Debug.Log($"From: {tile.PositionInGrid}, To: {tileWithDoor.PositionInGrid}, Distance: {TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid)}");
+									//Debug.Log($"From: {tile.PositionInGrid}, To: {tileWithDoor.PositionInGrid}, Distance: {TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid)}");
 									farEnoughFromAllDoors = false;
 									break;
 								}
@@ -611,7 +618,7 @@ namespace LevelGeneration
 									//tilesWithDoors.Add(tile);
 								}	
 							}
-						}	
+						}
 					}
 				}
 			}
