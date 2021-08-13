@@ -19,7 +19,8 @@ public class InputHandler : MonoBehaviour
 
         MousePosition = Input.mousePosition;
         
-        if (Input.GetButtonDown(Space))
+        //this was previously just Space which wouldn't work and was causing an error, so I changed it to "Jump" - John
+        if (Input.GetButtonDown("Jump"))
         {
            if (!isInGamePaused)
            {
