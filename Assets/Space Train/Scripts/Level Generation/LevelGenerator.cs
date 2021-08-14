@@ -32,9 +32,10 @@ namespace LevelGeneration
 
 	public class LevelGenerator : MonoBehaviour
 	{
+		[SerializeField] private float tileSize = 2f;
 		[SerializeField] private int levelLength = 32;
 		[SerializeField] private int levelWidth = 8;
-
+		
 		[SerializeField] private int minDistanceBetweenCorridors = 2;
 		[SerializeField] private int minDistanceBetweenCorridorAndLevelEdge = 2;
 		[SerializeField] private int maxCorridorLength = 6;
@@ -146,7 +147,7 @@ namespace LevelGeneration
 				RoomStyle usedRoomstyle = RoomStyle != null
 					? RoomStyle
 					: _defaultStyle;
-				Vector3 positionToInstantiate = _offset + new Vector3(PositionInGrid.x, 0, PositionInGrid.y);
+				Vector3 positionToInstantiate = _offset + new Vector3(PositionInGrid.x * room.levelGenerator.tileSize, 0, PositionInGrid.y * room.levelGenerator.tileSize);
 				_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Floor, positionToInstantiate, Quaternion.identity));
 				//instantiating the edgeObjects;
 				for(int i = 0; i < 4; i ++)
