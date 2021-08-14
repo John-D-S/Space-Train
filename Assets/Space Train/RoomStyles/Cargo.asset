@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61eee2c4b1cd8724898254eb0e6a24b5, type: 3}
-  m_Name: Corridor
+  m_Name: Cargo
   m_EditorClassIdentifier: 
-  roomTag: Corridor
-  LinkableRoomTags:
-  - Default
+  roomTag: 
+  LinkableRoomTags: []
   props: []
-  floor: {fileID: 4972177422767711341, guid: f6b347b401c310246a3c6f83b657dc34, type: 3}
-  wall: {fileID: 6065121446419011961, guid: 161de594897e4cb48ad53d23a3eecbf6, type: 3}
+  floor: {fileID: 4972177422767711341, guid: 733242c694975b048ac5cc6fe864ff8b, type: 3}
+  wall: {fileID: 6065121446419011961, guid: 7bae452ee4bf9e34b8e289f2e5272672, type: 3}
   door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}

@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61eee2c4b1cd8724898254eb0e6a24b5, type: 3}
-  m_Name: passenger room
+  m_Name: Passenger
   m_EditorClassIdentifier: 
   roomTag: 
   LinkableRoomTags: []
-  floor: {fileID: 0}
-  wall: {fileID: 0}
-  door: {fileID: 0}
+  props: []
+  floor: {fileID: 4972177422767711341, guid: 5de5a1389db4e864c9ad5979e732293e, type: 3}
+  wall: {fileID: 6065121446419011961, guid: 68334be13298e5643932008fdda811d4, type: 3}
+  door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}

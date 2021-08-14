@@ -42,7 +42,8 @@ namespace LevelGeneration
 
 		[SerializeField] private int targetNumberOfCorridors = 8;
 
-		[SerializeField] private RoomStyle PlaceHolderRoomStyle;
+		[SerializeField] private RoomStyle corridorRoomStyle;
+		[SerializeField] private List<RoomStyle> roomStyles;
 		[System.NonSerialized] public List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
 		[System.NonSerialized] public List<Room> rooms = new List<Room>();
@@ -275,11 +276,14 @@ namespace LevelGeneration
 			//clear any already set rooms
 			rooms.Clear();
 			int currentRoomID = 2;
+			List<RoomStyle> shuffledRoomStyles = roomStyles.OrderBy( x => Random.value ).ToList( ); 
+			int i = 0;
 			for(int x = 0; x < levelWidth; x++)
 			{
 				for(int z = 0; z < levelLength; z++)
 				{
-					if(levelTiles[x][z].RoomID == 0)
+					LevelTile levelTile = levelTiles[x][z];
+					if(levelTile.RoomID == 0)
 					{
 						List<LevelTile> connectedLevelTiles = new List<LevelTile>();
 						foreach(Vector2Int position in ConnectedLevelTilePositions(new Vector2Int(x, z)))
@@ -287,7 +291,22 @@ namespace LevelGeneration
 							connectedLevelTiles.Add(levelTiles[position.x][position.y]);	
 						}
 
-						Room newRoom = new Room(currentRoomID, ref connectedLevelTiles, PlaceHolderRoomStyle, this);
+						RoomStyle roomStyle;
+						if(levelTile.tileType == TileType.Corridor)
+						{
+							roomStyle = corridorRoomStyle;
+						}
+						else
+						{
+							int roomStyleIndex = i % roomStyles.Count;
+							if(roomStyleIndex == 0)
+							{
+								shuffledRoomStyles = roomStyles.OrderBy( x => Random.value ).ToList( );
+							}
+							roomStyle = shuffledRoomStyles[roomStyleIndex % roomStyles.Count];
+							i += 1;
+						}
+						Room newRoom = new Room(currentRoomID, ref connectedLevelTiles, roomStyle, this);
 						rooms.Add(newRoom);
 						currentRoomID++;
 					}
@@ -644,7 +663,7 @@ namespace LevelGeneration
 			{
 				foreach(LevelTile tile in levelTile)
 				{
-					tile.InstantiateTileObjects(gameObject.transform.position,  ref instantiatedLevelObjects, PlaceHolderRoomStyle);
+					tile.InstantiateTileObjects(gameObject.transform.position,  ref instantiatedLevelObjects, corridorRoomStyle);
 				}
 			}
 		}
