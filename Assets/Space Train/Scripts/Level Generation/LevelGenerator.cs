@@ -114,7 +114,7 @@ namespace LevelGeneration
 				return PositionInGrid;
 			}
 			
-			public bool TryPlaceDoor(Direction _direction)
+			public bool TrySetDoor(Direction _direction)
 			{
 				if(tileEdges[(int) _direction] == TileEdge.Wall)
 				{
@@ -272,6 +272,7 @@ namespace LevelGeneration
 
 		private void SetRooms()
 		{
+			//clear any already set rooms
 			rooms.Clear();
 			int currentRoomID = 2;
 			for(int x = 0; x < levelWidth; x++)
@@ -359,8 +360,7 @@ namespace LevelGeneration
 			}
 			foreach(Vector2Int position in frontEntrancePostions)
 			{
-				GenerateCorridor(position, Axis.X
-				);
+				GenerateCorridor(position, Axis.X);
 			}
 		}
 
@@ -545,8 +545,8 @@ namespace LevelGeneration
 		{
 			foreach(Room room in rooms)
 			{
+				//Debug.Log(room.RoomID);
 				//the int in this dictionary refers to the id of the room on the other side of the door on this tile.
-				Dictionary<int, List<LevelTile>> tilesWithDoorsByConnectedRoomID = new Dictionary<int, List<LevelTile>>();
 				List<LevelTile> tilesWithDoors = new List<LevelTile>();
 				List<LevelTile> tilesWithWalls = new List<LevelTile>();
 				foreach(LevelTile tile in room.OccupiedTiles)
@@ -555,12 +555,6 @@ namespace LevelGeneration
 					{
 						if(tileEdge == LevelTile.TileEdge.Door && !tilesWithDoors.Contains(tile))
 						{
-							int roomIDOnOtherSideOfDoor = tile.RoomIDOnOtherSideOfDoor();
-							if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfDoor))
-							{
-								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfDoor] = new List<LevelTile>();
-							}
-							tilesWithDoorsByConnectedRoomID[tile.RoomIDOnOtherSideOfDoor()].Add(tile);
 							tilesWithDoors.Add(tile);
 						}
 						if(tileEdge == LevelTile.TileEdge.Wall && !tilesWithWalls.Contains(tile))
@@ -569,8 +563,8 @@ namespace LevelGeneration
 						}
 					}
 				}
-				//Debug.Log(tilesWithDoors.Count);
-				//this shuffles the list (hopefully)
+				
+				//this shuffles the list
 				tilesWithWalls = tilesWithWalls.OrderBy( x => Random.value ).ToList( );
 				foreach(LevelTile tile in tilesWithWalls)
 				{
@@ -587,36 +581,21 @@ namespace LevelGeneration
 					Vector2Int posOnOtherSideOfNewDoor = tile.PosInOneUnitInDirection(direcitonToPlaceDoor);
 					if(PositionIsWithinLevel(posOnOtherSideOfNewDoor))
 					{
-						int roomIDOnOtherSideOfNewDoor = levelTiles[posOnOtherSideOfNewDoor.x][posOnOtherSideOfNewDoor.y].RoomID;
-						if(!tilesWithDoorsByConnectedRoomID.ContainsKey(roomIDOnOtherSideOfNewDoor))
+						bool farEnoughFromAllDoors = true; 
+						foreach(LevelTile tileWithDoor in tilesWithDoors)
 						{
-							if(tile.TryPlaceDoor(direcitonToPlaceDoor))
+							if(TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid) < minDistanceBetweenDoors)
 							{
-								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor] = new List<LevelTile>();
-								tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor].Add(tile);
-								//tilesWithDoors.Add(tile);
+								//Debug.Log($"From: {tile.PositionInGrid}, To: {tileWithDoor.PositionInGrid}, Distance: {TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid)}");
+								farEnoughFromAllDoors = false;
+								break;
 							}
 						}
-						else
+						if(farEnoughFromAllDoors)
 						{
-							bool farEnoughFromAllDoors = true;
-							foreach(LevelTile tileWithDoor in tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor])
+							if(tile.TrySetDoor(direcitonToPlaceDoor))
 							{
-								
-								if(TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid) < minDistanceBetweenDoors)
-								{
-									//Debug.Log($"From: {tile.PositionInGrid}, To: {tileWithDoor.PositionInGrid}, Distance: {TaxiCabDistance(tile.PositionInGrid, tileWithDoor.PositionInGrid)}");
-									farEnoughFromAllDoors = false;
-									break;
-								}
-							}
-							if(farEnoughFromAllDoors)
-							{
-								if(tile.TryPlaceDoor(direcitonToPlaceDoor))
-								{
-									tilesWithDoorsByConnectedRoomID[roomIDOnOtherSideOfNewDoor].Add(tile);
-									//tilesWithDoors.Add(tile);
-								}	
+								tilesWithDoors.Add(tile);
 							}
 						}
 					}
