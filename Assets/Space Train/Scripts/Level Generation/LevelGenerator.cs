@@ -87,6 +87,7 @@ namespace LevelGeneration
 				Wall
 			}
 
+			public bool doorAlreadyInstantiated = false;
 			public int RoomIDOnOtherSideOfDoor()
 			{
 				for(int i = 0; i < 0; i++)
@@ -155,7 +156,15 @@ namespace LevelGeneration
 					switch(tileEdges[i])
 					{
 						case TileEdge.Door:
-							_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Door, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+							//only instantiate a door if it has not already been instantiated from the other side.
+							Vector2Int doorNeighborPosition = PosInOneUnitInDirection((Direction)i);
+							//LevelTile doorNeighborTile = room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y];
+							if(!room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y].doorAlreadyInstantiated)
+							{
+								_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Door, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+								room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y].doorAlreadyInstantiated = true;
+								doorAlreadyInstantiated = true;
+							}
 							break;
 						case TileEdge.Wall:
 							_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Wall, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
