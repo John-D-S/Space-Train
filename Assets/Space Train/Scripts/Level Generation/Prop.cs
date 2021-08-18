@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,14 @@ public class Prop : MonoBehaviour
 {
     [SerializeField] private Vector2Int propSize;
     public Vector2Int PropSize => propSize;
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 0, propSize.y));
+        Gizmos.DrawLine(new Vector3(0, 0, propSize.y), new Vector3(propSize.x, 0, propSize.y));
+        Gizmos.DrawLine(new Vector3(propSize.x, 0, propSize.y), new Vector3(propSize.x, 0, 0));
+        Gizmos.DrawLine(new Vector3(propSize.x, 0, 0), new Vector3(0, 0, 0));
+    }
 }
 
 [System.Serializable]
