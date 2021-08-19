@@ -5,6 +5,7 @@ using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.WSA;
 
 using Random = UnityEngine.Random;
 
@@ -33,6 +34,7 @@ namespace LevelGeneration
 	public class LevelGenerator : MonoBehaviour
 	{
 		[SerializeField] private float tileSize = 2f;
+		public float TileSize => tileSize;
 		[SerializeField] private int levelLength = 32;
 		[SerializeField] private int levelWidth = 8;
 		
@@ -51,164 +53,6 @@ namespace LevelGeneration
 		
 		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
 
-		public class LevelTile
-		{
-			public TileType tileType;
-			public Room room;
-			public int RoomID
-			{
-				get
-				{
-					if(room != null)
-					{
-						return room.RoomID;
-					}
-					else
-					{
-						return 0;
-					}
-				}
-			}
-			public Vector2Int PositionInGrid { get; private set; }
-			public TileEdge[] tileEdges = new TileEdge[4];
-
-			public RoomStyle RoomStyle => room.roomStyle;
-
-			public LevelTile(TileType _tileType, Vector2Int _positionInGrid)
-			{
-				tileType = _tileType;
-				PositionInGrid = _positionInGrid;
-			}
-			
-			public enum TileEdge
-			{
-				Empty,
-				Door,
-				Wall
-			}
-
-			public bool doorAlreadyInstantiated = false;
-			public int RoomIDOnOtherSideOfDoor()
-			{
-				for(int i = 0; i < 0; i++)
-				{
-					if(tileEdges[i] == TileEdge.Door)
-					{
-						Vector2Int posOnOtherSideOfDoor = PosInOneUnitInDirection((Direction) i);
-						return room.levelGenerator.levelTiles[posOnOtherSideOfDoor.x][posOnOtherSideOfDoor.y].RoomID;
-					}
-				}
-				return RoomID;
-			}
-			
-			public Vector2Int PosInOneUnitInDirection(Direction _direction)
-			{
-				switch(_direction)
-				{
-					case Direction.Zpos:
-						return PositionInGrid + Vector2Int.up;
-					case Direction.Xpos:
-						return PositionInGrid + Vector2Int.right;
-					case Direction.Zneg:
-						return PositionInGrid + Vector2Int.down;
-					case Direction.Xneg:
-						return PositionInGrid + Vector2Int.left;
-				}
-				return PositionInGrid;
-			}
-			
-			public bool TrySetDoor(Direction _direction)
-			{
-				if(tileEdges[(int) _direction] == TileEdge.Wall)
-				{
-					Vector2Int connectedDoorTilePos = PosInOneUnitInDirection(_direction);
-					if(room.levelGenerator.PositionIsWithinLevel(connectedDoorTilePos))
-					{
-						SetEdge(TileEdge.Door, _direction);				
-						//this is the opposite of _direction. for example, if _direction is Xneg, otherDoorDirection will be Xpos;
-						Direction otherDoorDirection = (Direction)(((int)_direction + 2) % 4);
-						room.levelGenerator.levelTiles[connectedDoorTilePos.x][connectedDoorTilePos.y].SetEdge(TileEdge.Door, otherDoorDirection);
-						return true;
-					}
-				}
-				return false;
-			}
-			
-			public void SetEdge(TileEdge _edge, Direction _direction)
-			{
-				tileEdges[(int)_direction] = _edge;
-			}
-			
-			public void InstantiateTileObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
-			{
-				if(RoomStyle == null)
-				{
-					Debug.Log("roomstyle is null");
-				}
-				RoomStyle usedRoomstyle = RoomStyle != null
-					? RoomStyle
-					: _defaultStyle;
-				Vector3 positionToInstantiate = _offset + new Vector3(PositionInGrid.x * room.levelGenerator.tileSize, 0, PositionInGrid.y * room.levelGenerator.tileSize);
-				_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Floor, positionToInstantiate, Quaternion.identity));
-				//instantiating the edgeObjects;
-				for(int i = 0; i < 4; i ++)
-				{
-					switch(tileEdges[i])
-					{
-						case TileEdge.Door:
-							//only instantiate a door if it has not already been instantiated from the other side.
-							Vector2Int doorNeighborPosition = PosInOneUnitInDirection((Direction)i);
-							//LevelTile doorNeighborTile = room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y];
-							if(!room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y].doorAlreadyInstantiated)
-							{
-								_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Door, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
-								room.levelGenerator.levelTiles[doorNeighborPosition.x][doorNeighborPosition.y].doorAlreadyInstantiated = true;
-								doorAlreadyInstantiated = true;
-							}
-							break;
-						case TileEdge.Wall:
-							_instantiatedGameObjects.Add(Instantiate(usedRoomstyle.Wall, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
-							break;
-						case TileEdge.Empty:
-							break;
-					}
-				}
-			}
-		}
-
-		public class Room
-		{
-			public Room(int _roomID, ref List<LevelTile> _occupiedTiles, RoomStyle _roomStyle, LevelGenerator _levelGenerator)
-			{
-				levelGenerator = _levelGenerator;
-				RoomID = _roomID;
-				foreach(LevelTile tile in _occupiedTiles)
-				{
-					tile.room = this;
-				}
-				OccupiedTiles = _occupiedTiles;
-				roomStyle = _roomStyle;
-			}
-
-			public LevelGenerator levelGenerator;
-			public RoomStyle roomStyle;
-			public int RoomID { get; private set; }
-			public List<LevelTile> OccupiedTiles { get; private set; }
-			
-			public List<Vector2Int> OccupiedTilePositions
-			{
-				get
-				{
-					List<Vector2Int> returnValue = new List<Vector2Int>();
-					foreach(LevelTile tile in OccupiedTiles)	
-					{
-						returnValue.Add(tile.PositionInGrid);
-					}
-
-					return returnValue;
-				}
-			}
-		}
 		
 		/// <summary>
 		/// returns a list of all the Vector2s contained within the box defined by _from and _to. (inclusive)
@@ -396,7 +240,7 @@ namespace LevelGeneration
 		/// <summary>
 		/// returns true if the postition is inside of the level and false if it is outside
 		/// </summary>
-		private bool PositionIsWithinLevel(Vector2Int _postion)
+		public bool PositionIsWithinLevel(Vector2Int _postion)
 		{
 			if(_postion.x < 0 || _postion.x > levelWidth - 1 || _postion.y < 0 || _postion.y > levelLength - 1)
 			{
@@ -628,6 +472,75 @@ namespace LevelGeneration
 							}
 						}
 					}
+				}
+			}
+		}
+
+		private bool TryPlaceProp(ref Room _room, PropSpawningInfo _propSpawningInfo)
+		{
+			int roomID = _room.RoomID;
+			
+			Vector2Int roomSmallestCorner = new Vector2Int(levelWidth, levelLength);
+			Vector2Int roomLargestCorner = Vector2Int.zero;
+
+			Vector2Int _propSize = _propSpawningInfo.PropComponent.PropSize;
+			
+			List<LevelTile> roomTiles = _room.OccupiedTiles.ToArray().ToList();
+			roomTiles = roomTiles.OrderBy( x => Random.value ).ToList();
+			
+			List<Vector2Int> rotationMultipliers = new List<Vector2Int>()
+			{
+				new Vector2Int(1, 1),
+				new Vector2Int(1, -1),
+				new Vector2Int(-1, -1),
+				new Vector2Int(-1, 1)
+			};
+			
+			foreach(LevelTile tile in roomTiles)
+			{
+				//try to see if the prop fits with each rotation
+				for(int i = 0; i < 4; i++)
+				{
+					List<Vector2Int> positionsInRotatedRoom = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + _propSize * rotationMultipliers[i]);
+					bool canPlacePropHere = true;
+					foreach(Vector2Int posInRotatedRoom in positionsInRotatedRoom)
+					{
+						if(levelTiles[posInRotatedRoom.x][posInRotatedRoom.y].OccupiedByProp)
+						{
+							canPlacePropHere = false;
+							break;
+						}
+					}
+					if(canPlacePropHere)
+					{
+						foreach(Vector2Int pos in positionsInRotatedRoom)
+						{
+							levelTiles[pos.x][pos.y].OccupiedByProp = true;
+						}
+						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+		
+		private void SetProps()
+		{
+			foreach(Room room in rooms)
+			{
+				List<LevelTile> roomTiles = room.OccupiedTiles.ToArray().ToList();
+				roomTiles = roomTiles.OrderBy( x => Random.value ).ToList();
+				//place the props associated with room's roomstyle until there is no room left or the maximum number of each prop has been used
+				
+				
+				//a dictionary to contain whether it is possible to place any more of each prop in room.roomStyle.Props
+				
+				//for each prop in room.roomStyle.Props
+				foreach(PropSpawningInfo prop in room.roomStyle.Props)
+				{
+					
 				}
 			}
 		}
