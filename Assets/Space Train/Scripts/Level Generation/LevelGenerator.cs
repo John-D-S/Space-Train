@@ -534,7 +534,7 @@ namespace LevelGeneration
 						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
 						_room.RoomProps.Add(new Room.InstantiationInfo(
 							_propSpawningInfo.PropGameObject, 
-							new Vector3(tile.PositionInGrid.x, 0, tile.PositionInGrid.y), 
+							new Vector3(tile.PositionInGrid.x - .5f, 0, tile.PositionInGrid.y - .5f), 
 							Quaternion.AngleAxis(i * 90, Vector3.up)));
 						return true;
 					}
