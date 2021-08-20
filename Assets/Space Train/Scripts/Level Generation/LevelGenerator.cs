@@ -510,16 +510,16 @@ namespace LevelGeneration
 				//try to see if the prop fits with each rotation
 				for(int i = 0; i < 4; i++)
 				{
-					List<Vector2Int> positionsInRotatedRoom = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + _propSize * rotationMultipliers[i]);
+					List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + (_propSize - Vector2Int.one) * rotationMultipliers[i]);
 					bool canPlacePropHere = true;
-					foreach(Vector2Int posInRotatedRoom in positionsInRotatedRoom)
+					foreach(Vector2Int posInRotatedProp in positionsInRotatedProp)
 					{
-						if(!PositionIsWithinLevel(posInRotatedRoom) || levelTiles[posInRotatedRoom.x][posInRotatedRoom.y].room.RoomID != roomID)
+						if(!PositionIsWithinLevel(posInRotatedProp) || levelTiles[posInRotatedProp.x][posInRotatedProp.y].room.RoomID != roomID)
 						{
 							canPlacePropHere = false;
 							break;
 						}
-						if(levelTiles[posInRotatedRoom.x][posInRotatedRoom.y].OccupiedByProp)
+						if(levelTiles[posInRotatedProp.x][posInRotatedProp.y].OccupiedByProp)
 						{
 							canPlacePropHere = false;
 							break;
@@ -527,14 +527,15 @@ namespace LevelGeneration
 					}
 					if(canPlacePropHere)
 					{
-						foreach(Vector2Int pos in positionsInRotatedRoom)
+						foreach(Vector2Int pos in positionsInRotatedProp)
 						{
+							//Debug.Log($"{_propSpawningInfo.PropGameObject.name}: {pos * 2}");
 							levelTiles[pos.x][pos.y].OccupiedByProp = true;
 						}
 						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
 						_room.RoomProps.Add(new Room.InstantiationInfo(
 							_propSpawningInfo.PropGameObject, 
-							new Vector3(tile.PositionInGrid.x - .5f, 0, tile.PositionInGrid.y - .5f), 
+							new Vector3(tile.PositionInGrid.x - rotationMultipliers[i].x * .5f, 0, tile.PositionInGrid.y - rotationMultipliers[i].y * .5f), 
 							Quaternion.AngleAxis(i * 90, Vector3.up)));
 						return true;
 					}

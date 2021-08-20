@@ -52,7 +52,9 @@ namespace LevelGeneration
 					return true;
 				foreach(LevelTile.TileEdge tileEdge in tileEdges)
 					if(tileEdge == LevelTile.TileEdge.Door)
+					{
 						return true;
+					}
 				return false;
 			}
 			set
