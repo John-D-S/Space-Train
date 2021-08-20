@@ -531,13 +531,32 @@ namespace LevelGeneration
 				for(int i = 0; i < 4; i++)
 				{
 					int rot = (i + randRotOffset) % 4;
-					//if the prop is marked to be placed next to a wall, these are all the positions that must be placed next to that wall.
-					//List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
-					//if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
-					//{
-					//	requiredWallPositions.Add();
-					//}
 					
+					//if the prop is marked to be placed next to a wall, these are all the positions that must have a wall on them
+					List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
+					
+					if(_propSpawningInfo.PropComponent.ZPosWallPlacement || _propSpawningInfo.PropComponent.XPosWallPlacement || _propSpawningInfo.PropComponent.ZNegWallPlacement || _propSpawningInfo.PropComponent.XNegWallPlacement)
+					{
+						//the list of positions walls must be in relation to the prop.
+						List<Vector2Int> localWallPositions = new List<Vector2Int>();
+						
+						//jeez :/
+						if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
+							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(0, _propSize.y), _propSize))
+								localWallPositions.Add(pos);
+						if(_propSpawningInfo.PropComponent.XPosWallPlacement)
+							foreach(Vector2Int pos in PositionsInBox(_propSize, new Vector2Int(_propSize.x, 0)))
+								localWallPositions.Add(pos);
+						if(_propSpawningInfo.PropComponent.ZNegWallPlacement)
+							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(_propSize.x, 0), Vector2Int.zero))
+								localWallPositions.Add(pos);
+						if(_propSpawningInfo.PropComponent.XNegWallPlacement)
+							foreach(Vector2Int pos in PositionsInBox(Vector2Int.zero, new Vector2Int(0, _propSize.y)))
+								localWallPositions.Add(pos);
+
+						foreach(Vector2Int position in localWallPositions)
+							requiredWallPositions.Add(RotateVector2Int(position, rot) + tile.PositionInGrid);
+					}
 					
 					List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + RotateVector2Int((_propSize - Vector2Int.one), rot));
 					bool canPlacePropHere = true;
@@ -552,6 +571,10 @@ namespace LevelGeneration
 						{
 							canPlacePropHere = false;
 							break;
+						}
+						if(requiredWallPositions.Count > 0)
+						{
+							//check each of the positions in required wallpositions and disallow placement if any of the tiles at those positions do not have a wall on them.
 						}
 					}
 					if(canPlacePropHere)
