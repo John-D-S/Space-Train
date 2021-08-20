@@ -24,24 +24,29 @@ public class Prop : MonoBehaviour
     [SerializeField, Tooltip("checking this means that the negative x side of the prop must be placed against a wall during level generation")]
     private bool xNegWallPlacement;
     
+    [SerializeField, Tooltip("This does not affect generation or prop placement, just how the border gizmo appears in game.")] 
+    private float tileSize = 2; 
+    
     private void OnDrawGizmosSelected()
     {
+        float yPropSize = propSize.y * tileSize;
+        float xPropSize = propSize.x * tileSize;
         if(repeat)
         {
             Gizmos.color = Color.green;
             switch(repeatDirection)
             {
                 case Direction.Zpos:
-                    Gizmos.DrawLine(new Vector3(0, 0.1f, propSize.y), new Vector3(propSize.x, 0.1f, propSize.y));                           
+                    Gizmos.DrawLine(new Vector3(0, 0.1f, yPropSize), new Vector3(xPropSize, 0.1f, yPropSize));                           
                     break;
                 case Direction.Xpos:
-                    Gizmos.DrawLine(new Vector3(propSize.x, 0.1f, propSize.y), new Vector3(propSize.x, 0.1f, 0));                    
+                    Gizmos.DrawLine(new Vector3(xPropSize, 0.1f, yPropSize), new Vector3(xPropSize, 0.1f, 0));                    
                     break;
                 case Direction.Zneg:
-                    Gizmos.DrawLine(new Vector3(propSize.x, 0.1f, 0), new Vector3(0, 0.1f, 0));            
+                    Gizmos.DrawLine(new Vector3(xPropSize, 0.1f, 0), new Vector3(0, 0.1f, 0));            
                     break;
                 case Direction.Xneg:
-                    Gizmos.DrawLine(new Vector3(0, 0.1f, 0), new Vector3(0, 0.1f, propSize.y));            
+                    Gizmos.DrawLine(new Vector3(0, 0.1f, 0), new Vector3(0, 0.1f, yPropSize));            
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -50,19 +55,19 @@ public class Prop : MonoBehaviour
         Gizmos.color = zPosWallPlacement
             ? Color.red
             : Color.gray;
-        Gizmos.DrawLine(new Vector3(0, 0, propSize.y), new Vector3(propSize.x, 0, propSize.y));
+        Gizmos.DrawLine(new Vector3(0, 0, yPropSize), new Vector3(xPropSize, 0, yPropSize));
         Gizmos.color = xPosWallPlacement
             ? Color.red
             : Color.gray;
-        Gizmos.DrawLine(new Vector3(propSize.x, 0, propSize.y), new Vector3(propSize.x, 0, 0));
+        Gizmos.DrawLine(new Vector3(xPropSize, 0, yPropSize), new Vector3(xPropSize, 0, 0));
         Gizmos.color = zNegWallPlacement
             ? Color.red
             : Color.gray;
-        Gizmos.DrawLine(new Vector3(propSize.x, 0, 0), new Vector3(0, 0, 0));
+        Gizmos.DrawLine(new Vector3(xPropSize, 0, 0), new Vector3(0, 0, 0));
         Gizmos.color = xNegWallPlacement
             ? Color.red
             : Color.gray;
-        Gizmos.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 0, propSize.y));
+        Gizmos.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 0, yPropSize));
     }
 }
 
