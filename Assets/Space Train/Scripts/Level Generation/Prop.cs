@@ -17,12 +17,16 @@ public class Prop : MonoBehaviour
     [Header("-- Wall Positioning Settings --")] 
     [SerializeField, Tooltip("checking this means that the positive z side of the prop must be placed against a wall during level generation")] 
     private bool zPosWallPlacement;
+    public bool ZPosWallPlacement => zPosWallPlacement;
     [SerializeField, Tooltip("checking this means that the positive x side of the prop must be placed against a wall during level generation")] 
     private bool xPosWallPlacement;
+    public bool XPosWallPlacement => xPosWallPlacement;
     [SerializeField, Tooltip("checking this means that the negative z side of the prop must be placed against a wall during level generation")] 
     private bool zNegWallPlacement;
+    public bool ZNegWallPlacement => ZNegWallPlacement;
     [SerializeField, Tooltip("checking this means that the negative x side of the prop must be placed against a wall during level generation")]
     private bool xNegWallPlacement;
+    public bool XNegWallPlacement => xNegWallPlacement;
     
     [SerializeField, Tooltip("This does not affect generation or prop placement, just how the border gizmo appears in game.")] 
     private float tileSize = 2; 

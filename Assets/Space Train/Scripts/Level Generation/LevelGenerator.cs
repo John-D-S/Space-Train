@@ -475,6 +475,23 @@ namespace LevelGeneration
 				}
 			}
 		}
+
+		/// <summary>
+		/// rotatest the given position clockwise about 0,0 in 90 increments _rotAmount times
+		/// </summary>
+		private Vector2Int RotateVector2Int(Vector2Int _pos, int _rotAmount)
+		{
+			int actualRotAmount = _rotAmount % 4;
+			if(actualRotAmount == 0)
+				return _pos;
+			if(actualRotAmount == 1)
+				return new Vector2Int(_pos.y, -_pos.x);
+			if(actualRotAmount == 2)
+				return -_pos;
+			if(actualRotAmount == 3)
+				return new Vector2Int(-_pos.y, _pos.x);
+			return _pos;
+		}
 		
 		private bool TryPlaceProp(ref Room _room, PropSpawningInfo _propSpawningInfo)
 		{
@@ -507,10 +524,22 @@ namespace LevelGeneration
 			
 			foreach(LevelTile tile in roomTiles)
 			{
+				int randRotOffset = Random.Range(0, 4);
+				
 				//try to see if the prop fits with each rotation
+				//i represents how many 90 degree increments of rotation we are dealing with.
 				for(int i = 0; i < 4; i++)
 				{
-					List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + (_propSize - Vector2Int.one) * rotationMultipliers[i]);
+					int rot = (i + randRotOffset) % 4;
+					//if the prop is marked to be placed next to a wall, these are all the positions that must be placed next to that wall.
+					//List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
+					//if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
+					//{
+					//	requiredWallPositions.Add();
+					//}
+					
+					
+					List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + RotateVector2Int((_propSize - Vector2Int.one), rot));
 					bool canPlacePropHere = true;
 					foreach(Vector2Int posInRotatedProp in positionsInRotatedProp)
 					{
@@ -535,8 +564,8 @@ namespace LevelGeneration
 						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
 						_room.RoomProps.Add(new Room.InstantiationInfo(
 							_propSpawningInfo.PropGameObject, 
-							new Vector3(tile.PositionInGrid.x - rotationMultipliers[i].x * .5f, 0, tile.PositionInGrid.y - rotationMultipliers[i].y * .5f), 
-							Quaternion.AngleAxis(i * 90, Vector3.up)));
+							new Vector3(tile.PositionInGrid.x - rotationMultipliers[rot].x * .5f, 0, tile.PositionInGrid.y - rotationMultipliers[rot].y * .5f), 
+							Quaternion.AngleAxis(rot * 90, Vector3.up)));
 						return true;
 					}
 				}
