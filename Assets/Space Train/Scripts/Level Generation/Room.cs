@@ -27,6 +27,25 @@ namespace LevelGeneration
 		public readonly RoomStyle roomStyle;
 		public int RoomID { get; private set; }
 		public List<LevelTile> OccupiedTiles { get; private set; }
+
+		public class InstantiationInfo
+		{
+			private GameObject propGameObject;
+			private Vector3 instantiationPosition;
+			private Quaternion instantiationRotation;
+
+			public InstantiationInfo(GameObject _propGameObject, Vector3 _instantiationPosition, Quaternion _instantiationRotation)
+			{
+				propGameObject = _propGameObject;
+				instantiationPosition = _instantiationPosition;
+				instantiationRotation = _instantiationRotation;
+			}
+
+			public void InstantiateProp(Vector3 _offset, float levelScale, ref List<GameObject> _instantiatedGameObjects)
+			{
+				_instantiatedGameObjects.Add(Object.Instantiate(propGameObject, instantiationPosition * levelScale + _offset, instantiationRotation));
+			}
+		}
 		
 		public List<Vector2Int> OccupiedTilePositions
 		{
@@ -40,6 +59,16 @@ namespace LevelGeneration
 
 				return returnValue;
 			}
+		}
+
+		public List<InstantiationInfo> RoomProps = new List<InstantiationInfo>();
+
+		public void InstantiateRoomObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
+		{
+			foreach(LevelTile occupiedTile in OccupiedTiles)
+				occupiedTile.InstantiateTileObjects(_offset, ref _instantiatedGameObjects, _defaultStyle);
+			foreach(InstantiationInfo propInstantiationInfo in RoomProps)
+				propInstantiationInfo.InstantiateProp(_offset, levelGenerator.TileSize, ref _instantiatedGameObjects);
 		}
 	}
 }

@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61eee2c4b1cd8724898254eb0e6a24b5, type: 3}
   m_Name: Passenger
   m_EditorClassIdentifier: 
-  roomTag: 
-  LinkableRoomTags: []
-  props: []
+  props:
+  - prop: {fileID: 1020948664382542574, guid: 417cfb429f349f049b2a48da9b16db51, type: 3}
+    maxNumberInRoom: 1
+  - prop: {fileID: 2291278805624790259, guid: 76f3ca57ad9c822499e0f8b7ff688528, type: 3}
+    maxNumberInRoom: 5
+  - prop: {fileID: 1972401000682294858, guid: 482535141f0b3c64982da2f2b8d78072, type: 3}
+    maxNumberInRoom: 3
   floor: {fileID: 4972177422767711341, guid: 5de5a1389db4e864c9ad5979e732293e, type: 3}
   wall: {fileID: 6065121446419011961, guid: 68334be13298e5643932008fdda811d4, type: 3}
   door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}

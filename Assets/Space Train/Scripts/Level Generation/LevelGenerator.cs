@@ -475,7 +475,7 @@ namespace LevelGeneration
 				}
 			}
 		}
-
+		
 		private bool TryPlaceProp(ref Room _room, PropSpawningInfo _propSpawningInfo)
 		{
 			int roomID = _room.RoomID;
@@ -487,6 +487,15 @@ namespace LevelGeneration
 			
 			List<LevelTile> roomTiles = _room.OccupiedTiles.ToArray().ToList();
 			roomTiles = roomTiles.OrderBy( x => Random.value ).ToList();
+			
+			//create a list of Vector2Ints corresponding to each position of each tile in the room _room.
+			List<Vector2Int> roomTilePositions = new List<Vector2Int>();
+			int index = 0;
+			foreach(LevelTile levelTile in roomTiles)
+			{
+				roomTilePositions.Add(roomTiles[index].PositionInGrid);
+				index++;
+			}
 			
 			List<Vector2Int> rotationMultipliers = new List<Vector2Int>()
 			{
@@ -505,6 +514,11 @@ namespace LevelGeneration
 					bool canPlacePropHere = true;
 					foreach(Vector2Int posInRotatedRoom in positionsInRotatedRoom)
 					{
+						if(!PositionIsWithinLevel(posInRotatedRoom) || levelTiles[posInRotatedRoom.x][posInRotatedRoom.y].room.RoomID != roomID)
+						{
+							canPlacePropHere = false;
+							break;
+						}
 						if(levelTiles[posInRotatedRoom.x][posInRotatedRoom.y].OccupiedByProp)
 						{
 							canPlacePropHere = false;
@@ -518,41 +532,69 @@ namespace LevelGeneration
 							levelTiles[pos.x][pos.y].OccupiedByProp = true;
 						}
 						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
+						_room.RoomProps.Add(new Room.InstantiationInfo(
+							_propSpawningInfo.PropGameObject, 
+							new Vector3(tile.PositionInGrid.x, 0, tile.PositionInGrid.y), 
+							Quaternion.AngleAxis(i * 90, Vector3.up)));
 						return true;
 					}
 				}
 			}
-
 			return false;
 		}
 		
 		private void SetProps()
 		{
-			foreach(Room room in rooms)
+			//foreach(Room room in rooms) cannot be used here since the variable being iterated on cannot be passed into a funciton as a ref which is what is needed for TryPlaceProp()
+			for(int i = 0; i < rooms.Count; i++)
 			{
+				Room room = rooms[i];
 				List<LevelTile> roomTiles = room.OccupiedTiles.ToArray().ToList();
 				roomTiles = roomTiles.OrderBy( x => Random.value ).ToList();
 				//place the props associated with room's roomstyle until there is no room left or the maximum number of each prop has been used
 				
-				
+				//a dictionary to contain the number of each prop already placed
+				Dictionary<PropSpawningInfo, int> numberOfPropAdded = new Dictionary<PropSpawningInfo, int>();
 				//a dictionary to contain whether it is possible to place any more of each prop in room.roomStyle.Props
-				
-				//for each prop in room.roomStyle.Props
+				Dictionary<PropSpawningInfo, bool> propCanBeAdded = new Dictionary<PropSpawningInfo, bool>();
+				//set the initial values of the above dictionaries
 				foreach(PropSpawningInfo prop in room.roomStyle.Props)
 				{
-					
+					numberOfPropAdded[prop] = 0;
+					propCanBeAdded[prop] = true;
+				}
+				
+				bool morePropsCanBeAdded = true;
+				RoomStyle roomRoomStyle = room.roomStyle;
+				while(morePropsCanBeAdded)
+				{
+					foreach(PropSpawningInfo prop in roomRoomStyle.Props)
+					{
+						if(propCanBeAdded[prop] && numberOfPropAdded[prop] < prop.MaxNumberInRoom)
+						{
+							propCanBeAdded[prop] = TryPlaceProp(ref room, prop);
+							if(propCanBeAdded[prop])
+							{
+								numberOfPropAdded[prop]++;
+							}
+						}
+					}
+
+					morePropsCanBeAdded = false;
+					foreach(PropSpawningInfo prop in roomRoomStyle.Props)
+					{
+						if(propCanBeAdded[prop] && numberOfPropAdded[prop] < prop.MaxNumberInRoom)
+						{
+							morePropsCanBeAdded = true;
+							break;
+						}
+					}
 				}
 			}
 		}
-		
-		private void InstantiateLevelObjects()
+
+		private void SetWalls()
 		{
-			foreach(GameObject levelTile in instantiatedLevelObjects)
-			{
-				Destroy(levelTile);
-			}
-			instantiatedLevelObjects.Clear();
-			
 			foreach(Room room in rooms)
 			{
 				foreach(Vector2Int position in room.OccupiedTilePositions)
@@ -579,24 +621,30 @@ namespace LevelGeneration
 					}
 				}
 			}
-
 			SetDoorTiles();
-			
-			foreach(List<LevelTile> levelTile in levelTiles)
-			{
-				foreach(LevelTile tile in levelTile)
-				{
-					tile.InstantiateTileObjects(gameObject.transform.position,  ref instantiatedLevelObjects, corridorRoomStyle);
-				}
-			}
 		}
 
+		private void InstantiateLevelObjects()
+		{
+			foreach(GameObject thing in instantiatedLevelObjects)
+			{
+				Destroy(thing);
+			}
+			instantiatedLevelObjects.Clear();
+			foreach(Room room in rooms)
+			{
+				room.InstantiateRoomObjects(gameObject.transform.position,  ref instantiatedLevelObjects, corridorRoomStyle);
+			}
+		}
+		
 		public void GenerateLevel()
 		{
 			InitializeLevel();
 			GenerateCorridors();
 			AddEntrances();
 			SetRooms();
+			SetWalls();
+			SetProps();
 			InstantiateLevelObjects();
 		}
 		
