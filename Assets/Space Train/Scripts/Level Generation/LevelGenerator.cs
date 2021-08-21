@@ -24,12 +24,6 @@ namespace LevelGeneration
 		Zneg,
 		Xneg
 	}
-	
-	public enum TileType
-	{
-		Corridor,
-		Room
-	}
 
 	public class LevelGenerator : MonoBehaviour
 	{
@@ -508,14 +502,14 @@ namespace LevelGeneration
 				{
 					int rot = (i + randRotOffset) % 4;
 
-					if(TryPlacePropInPos(_room, _propSpawningInfo, rot, tile))
+					if(TryPlacePropInPos(_room, _propSpawningInfo, rot, tile, false))
 						return true;
 				}
 			}
 			return false;
 		}
 
-		private bool TryPlacePropInPos(Room _room, PropSpawningInfo _propSpawningInfo, int rot, LevelTile tile)
+		private bool TryPlacePropInPos(Room _room, PropSpawningInfo _propSpawningInfo, int rot, LevelTile tile, bool _ignoreWallPlacement)
 		{
 			int roomID = _room.RoomID;
 			
@@ -535,7 +529,7 @@ namespace LevelGeneration
 			//if the prop is marked to be placed next to a wall, these are all the positions that must have a wall on them
 			List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
 
-			if(_propSpawningInfo.PropComponent.ZPosWallPlacement || _propSpawningInfo.PropComponent.XPosWallPlacement || _propSpawningInfo.PropComponent.ZNegWallPlacement || _propSpawningInfo.PropComponent.XNegWallPlacement)
+			if((_propSpawningInfo.PropComponent.ZPosWallPlacement || _propSpawningInfo.PropComponent.XPosWallPlacement || _propSpawningInfo.PropComponent.ZNegWallPlacement || _propSpawningInfo.PropComponent.XNegWallPlacement) && !_ignoreWallPlacement)
 			{
 				//the list of positions walls must be in relation to the prop.
 				List<Vector2Int> localWallPositions = new List<Vector2Int>();
@@ -620,7 +614,7 @@ namespace LevelGeneration
 						: _propSize.x;
 					Vector2Int nextTilePosition = tile.PositionInGrid + nextTileDistance * nextTileDirection;
 					LevelTile nextTile = levelTiles[nextTilePosition.x][nextTilePosition.y];
-					TryPlacePropInPos(_room, _propSpawningInfo, rot, nextTile);
+					TryPlacePropInPos(_room, _propSpawningInfo, rot, nextTile, true);
 				}
 				return true;
 			}

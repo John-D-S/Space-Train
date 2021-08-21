@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   propSize: {x: 2, y: 1}
-  repeat: 1
+  repeat: 0
   repeatDirection: 0
   zPosWallPlacement: 0
   xPosWallPlacement: 0

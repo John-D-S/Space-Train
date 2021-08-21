@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace LevelGeneration
 {
+	public enum TileType
+	{
+		Corridor,
+		Room
+	}
+	
 	public class LevelTile
 	{
 		public TileType tileType;
