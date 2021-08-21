@@ -128,6 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7d15d1324c5d347b1d5d46fe4f381e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isChangeMenuOpen: 0
+  isInGamePaused: 0
 --- !u!114 &534403297835699182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe7d15d1324c5d347b1d5d46fe4f381e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isChangeMenuOpen: 0
+  isInGamePaused: 0
 --- !u!114 &2373333855592953713
 MonoBehaviour:
   m_ObjectHideFlags: 0
