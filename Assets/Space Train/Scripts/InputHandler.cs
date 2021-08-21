@@ -91,23 +91,26 @@ public class InputHandler : MonoBehaviour
 
 		    InputVector = new Vector2(h, v);
 
-		    // This is for the player movement
+		    // This is for the player movement.
 		    if(InputVector.magnitude != 0)
 		    {
-			    if(Input.GetKeyDown(KeyCode.LeftShift))
+			    if(Input.GetKey(KeyCode.LeftShift))
 			    {
 				    // Starts Running.
 				    RunningState();
 			    }
-			    // If not Starts Walking
-			    WalkingState();
+			    else
+			    {
+				    // If not Starts Walking.
+				    WalkingState();
+			    }
 		    }
 		    else
 		    {
 			    IdleState();
 		    }
 		    
-		    // If press space will turn invisable .
+		    // If press space will turn invisable.
 		    if(Input.GetButtonDown("Jump"))
 		    {
 			    // Basically Activate stealth or not.
