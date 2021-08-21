@@ -495,32 +495,8 @@ namespace LevelGeneration
 		
 		private bool TryPlaceProp(ref Room _room, PropSpawningInfo _propSpawningInfo)
 		{
-			int roomID = _room.RoomID;
-			
-			Vector2Int roomSmallestCorner = new Vector2Int(levelWidth, levelLength);
-			Vector2Int roomLargestCorner = Vector2Int.zero;
-
-			Vector2Int _propSize = _propSpawningInfo.PropComponent.PropSize;
-			
 			List<LevelTile> roomTiles = _room.OccupiedTiles.ToArray().ToList();
 			roomTiles = roomTiles.OrderBy( x => Random.value ).ToList();
-			
-			//create a list of Vector2Ints corresponding to each position of each tile in the room _room.
-			List<Vector2Int> roomTilePositions = new List<Vector2Int>();
-			int index = 0;
-			foreach(LevelTile levelTile in roomTiles)
-			{
-				roomTilePositions.Add(roomTiles[index].PositionInGrid);
-				index++;
-			}
-			
-			List<Vector2Int> rotationMultipliers = new List<Vector2Int>()
-			{
-				new Vector2Int(1, 1),
-				new Vector2Int(1, -1),
-				new Vector2Int(-1, -1),
-				new Vector2Int(-1, 1)
-			};
 			
 			foreach(LevelTile tile in roomTiles)
 			{
@@ -531,87 +507,122 @@ namespace LevelGeneration
 				for(int i = 0; i < 4; i++)
 				{
 					int rot = (i + randRotOffset) % 4;
-					
-					//if the prop is marked to be placed next to a wall, these are all the positions that must have a wall on them
-					List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
-					
-					if(_propSpawningInfo.PropComponent.ZPosWallPlacement || _propSpawningInfo.PropComponent.XPosWallPlacement || _propSpawningInfo.PropComponent.ZNegWallPlacement || _propSpawningInfo.PropComponent.XNegWallPlacement)
-					{
-						//the list of positions walls must be in relation to the prop.
-						List<Vector2Int> localWallPositions = new List<Vector2Int>();
 
-						Vector2Int usedPropSize = _propSize - Vector2Int.one;
-
-						//jeez :/
-						if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(0, usedPropSize.y), usedPropSize))
-								localWallPositions.Add(pos);
-						if(_propSpawningInfo.PropComponent.XPosWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(usedPropSize, new Vector2Int(usedPropSize.x, 0)))
-								localWallPositions.Add(pos);
-						if(_propSpawningInfo.PropComponent.ZNegWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(usedPropSize.x, 0), Vector2Int.zero))
-								localWallPositions.Add(pos);
-						if(_propSpawningInfo.PropComponent.XNegWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(Vector2Int.zero, new Vector2Int(0, usedPropSize.y)))
-								localWallPositions.Add(pos);
-
-						foreach(Vector2Int position in localWallPositions)
-							requiredWallPositions.Add(RotateVector2Int(position, rot) + tile.PositionInGrid);
-					}
-					
-					List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + RotateVector2Int((_propSize - Vector2Int.one), rot));
-					bool canPlacePropHere = true;
-					foreach(Vector2Int posInRotatedProp in positionsInRotatedProp)
-					{
-						if(!PositionIsWithinLevel(posInRotatedProp) || levelTiles[posInRotatedProp.x][posInRotatedProp.y].room.RoomID != roomID)
-						{
-							canPlacePropHere = false;
-							break;
-						}
-						if(levelTiles[posInRotatedProp.x][posInRotatedProp.y].OccupiedByProp)
-						{
-							canPlacePropHere = false;
-							break;
-						}
-						if(requiredWallPositions.Count > 0)
-						{
-							bool allWallPositionsHaveHalls = true;
-							foreach(Vector2Int wallPostion in requiredWallPositions)
-							{
-								if(!PositionIsWithinLevel(wallPostion) || !levelTiles[wallPostion.x][wallPostion.y].HasWall)
-								{
-									allWallPositionsHaveHalls = false;
-									break;
-								}
-							}
-							if(!allWallPositionsHaveHalls)
-							{
-								canPlacePropHere = false;
-								break;
-							}
-							//check each of the positions in required wallpositions and disallow placement if any of the tiles at those positions do not have a wall on them.
-						}
-					}
-					if(canPlacePropHere)
-					{
-						foreach(Vector2Int wallPosition in requiredWallPositions)
-						{
-							allUsedWallPositions.Add(wallPosition);
-						}
-						foreach(Vector2Int pos in positionsInRotatedProp)
-						{
-							//Debug.Log($"{_propSpawningInfo.PropGameObject.name}: {pos * 2}");
-							levelTiles[pos.x][pos.y].OccupiedByProp = true;
-						}
-						//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
-						_room.RoomProps.Add(new Room.InstantiationInfo(
-							_propSpawningInfo.PropGameObject, 
-							new Vector3(tile.PositionInGrid.x - rotationMultipliers[rot].x * .5f, 0, tile.PositionInGrid.y - rotationMultipliers[rot].y * .5f), 
-							Quaternion.AngleAxis(rot * 90, Vector3.up)));
+					if(TryPlacePropInPos(_room, _propSpawningInfo, rot, tile))
 						return true;
-					}
 				}
+			}
+			return false;
+		}
+
+		private bool TryPlacePropInPos(Room _room, PropSpawningInfo _propSpawningInfo, int rot, LevelTile tile)
+		{
+			int roomID = _room.RoomID;
+			
+			Vector2Int roomSmallestCorner = new Vector2Int(levelWidth, levelLength);
+			Vector2Int roomLargestCorner = Vector2Int.zero;
+
+			Vector2Int _propSize = _propSpawningInfo.PropComponent.PropSize;
+			
+			List<Vector2Int> rotationMultipliers = new List<Vector2Int>()
+			{
+				new Vector2Int(1, 1),
+				new Vector2Int(1, -1),
+				new Vector2Int(-1, -1),
+				new Vector2Int(-1, 1)
+			};
+			
+			//if the prop is marked to be placed next to a wall, these are all the positions that must have a wall on them
+			List<Vector2Int> requiredWallPositions = new List<Vector2Int>();
+
+			if(_propSpawningInfo.PropComponent.ZPosWallPlacement || _propSpawningInfo.PropComponent.XPosWallPlacement || _propSpawningInfo.PropComponent.ZNegWallPlacement || _propSpawningInfo.PropComponent.XNegWallPlacement)
+			{
+				//the list of positions walls must be in relation to the prop.
+				List<Vector2Int> localWallPositions = new List<Vector2Int>();
+
+				Vector2Int usedPropSize = _propSize - Vector2Int.one;
+
+				//jeez :/
+				if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
+					foreach(Vector2Int pos in PositionsInBox(new Vector2Int(0, usedPropSize.y), usedPropSize))
+						localWallPositions.Add(pos);
+				if(_propSpawningInfo.PropComponent.XPosWallPlacement)
+					foreach(Vector2Int pos in PositionsInBox(usedPropSize, new Vector2Int(usedPropSize.x, 0)))
+						localWallPositions.Add(pos);
+				if(_propSpawningInfo.PropComponent.ZNegWallPlacement)
+					foreach(Vector2Int pos in PositionsInBox(new Vector2Int(usedPropSize.x, 0), Vector2Int.zero))
+						localWallPositions.Add(pos);
+				if(_propSpawningInfo.PropComponent.XNegWallPlacement)
+					foreach(Vector2Int pos in PositionsInBox(Vector2Int.zero, new Vector2Int(0, usedPropSize.y)))
+						localWallPositions.Add(pos);
+
+				foreach(Vector2Int position in localWallPositions)
+					requiredWallPositions.Add(RotateVector2Int(position, rot) + tile.PositionInGrid);
+			}
+
+			List<Vector2Int> positionsInRotatedProp = PositionsInBox(tile.PositionInGrid, tile.PositionInGrid + RotateVector2Int((_propSize - Vector2Int.one), rot));
+			bool canPlacePropHere = true;
+			foreach(Vector2Int posInRotatedProp in positionsInRotatedProp)
+			{
+				if(!PositionIsWithinLevel(posInRotatedProp) || levelTiles[posInRotatedProp.x][posInRotatedProp.y].room.RoomID != roomID)
+				{
+					canPlacePropHere = false;
+					break;
+				}
+
+				if(levelTiles[posInRotatedProp.x][posInRotatedProp.y].OccupiedByProp)
+				{
+					canPlacePropHere = false;
+					break;
+				}
+
+				if(requiredWallPositions.Count > 0)
+				{
+					bool allWallPositionsHaveHalls = true;
+					foreach(Vector2Int wallPostion in requiredWallPositions)
+					{
+						if(!PositionIsWithinLevel(wallPostion) || !levelTiles[wallPostion.x][wallPostion.y].HasWall)
+						{
+							allWallPositionsHaveHalls = false;
+							break;
+						}
+					}
+
+					if(!allWallPositionsHaveHalls)
+					{
+						canPlacePropHere = false;
+						break;
+					}
+					//check each of the positions in required wallpositions and disallow placement if any of the tiles at those positions do not have a wall on them.
+				}
+			}
+			if(canPlacePropHere)
+			{
+				foreach(Vector2Int wallPosition in requiredWallPositions)
+				{
+					allUsedWallPositions.Add(wallPosition);
+				}
+
+				foreach(Vector2Int pos in positionsInRotatedProp)
+				{
+					//Debug.Log($"{_propSpawningInfo.PropGameObject.name}: {pos * 2}");
+					levelTiles[pos.x][pos.y].OccupiedByProp = true;
+				}
+
+				//find a way to add the prop's instantiation rotation and position to a list to be instantiated later.
+				_room.RoomProps.Add(new Room.InstantiationInfo(_propSpawningInfo.PropGameObject, new Vector3(tile.PositionInGrid.x - rotationMultipliers[rot].x * .5f, 0, tile.PositionInGrid.y - rotationMultipliers[rot].y * .5f), Quaternion.AngleAxis(rot * 90, Vector3.up)));
+				if(_propSpawningInfo.PropComponent.Repeat)
+				{
+					Direction repeatDirection = _propSpawningInfo.PropComponent.RepeatDirection;
+					Vector2Int nextTileDirection = PointsAroundPosition(Vector2Int.zero)[(int) repeatDirection];
+					int nextTileDistance = repeatDirection == Direction.Zpos || repeatDirection == Direction.Zneg
+						? _propSize.y
+						: _propSize.x;
+					Vector2Int nextTilePosition = tile.PositionInGrid + nextTileDistance * nextTileDirection;
+					LevelTile nextTile = levelTiles[nextTilePosition.x][nextTilePosition.y];
+					TryPlacePropInPos(_room, _propSpawningInfo, rot, nextTile);
+				}
+				return true;
 			}
 			return false;
 		}

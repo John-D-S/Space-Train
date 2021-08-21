@@ -12,7 +12,9 @@ public class Prop : MonoBehaviour
 
     [Header("-- Repeat Settings --")]
     [SerializeField] private bool repeat;
+    public bool Repeat => repeat;
     [SerializeField] private Direction repeatDirection;
+    public Direction RepeatDirection => repeatDirection;
 
     [Header("-- Wall Positioning Settings --")] 
     [SerializeField, Tooltip("checking this means that the positive z side of the prop must be placed against a wall during level generation")] 
