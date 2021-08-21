@@ -8,8 +8,6 @@ public class Agent : MonoBehaviour
 {
     private NavMeshAgent agent;
     private WayPoint[] waypoints;
-    
-    [SerializeField] 
 
     //will give us a random waypoint in the array as a variable every time i access it
     private WayPoint RandomPoint => waypoints[Random.Range(0, waypoints.Length)];
