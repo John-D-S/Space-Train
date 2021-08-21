@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Unity.AI.Navigation;
+
+using UnityEditor.AI;
+
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.WSA;
+
 
 using Random = UnityEngine.Random;
 
@@ -44,6 +47,8 @@ namespace LevelGeneration
 		[System.NonSerialized] public List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
 		[System.NonSerialized] public List<Room> rooms = new List<Room>();
+
+		[SerializeField] private NavMeshSurface navMeshSurface;
 		
 		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
 
@@ -725,6 +730,12 @@ namespace LevelGeneration
 				room.InstantiateRoomObjects(gameObject.transform.position,  ref instantiatedLevelObjects, corridorRoomStyle);
 			}
 		}
+
+		private IEnumerator BuildNavMesh()
+		{
+			yield return null;
+			navMeshSurface.BuildNavMesh();
+		}
 		
 		public void GenerateLevel()
 		{
@@ -735,6 +746,7 @@ namespace LevelGeneration
 			SetWalls();
 			SetProps();
 			InstantiateLevelObjects();
+			StartCoroutine(BuildNavMesh());
 		}
 		
 		private void Start()
