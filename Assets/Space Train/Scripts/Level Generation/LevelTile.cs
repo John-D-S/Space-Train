@@ -62,6 +62,22 @@ namespace LevelGeneration
 				occupiedByProp = value;
 			}
 		}
+
+		public bool HasWall
+		{
+			get
+			{
+				foreach(LevelTile.TileEdge tileEdge in tileEdges)
+				{
+					if(tileEdge == LevelTile.TileEdge.Wall)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
 		
 		public bool doorAlreadyInstantiated = false;
 		public int RoomIDOnOtherSideOfDoor()

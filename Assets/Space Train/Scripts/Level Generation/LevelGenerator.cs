@@ -539,19 +539,21 @@ namespace LevelGeneration
 					{
 						//the list of positions walls must be in relation to the prop.
 						List<Vector2Int> localWallPositions = new List<Vector2Int>();
-						
+
+						Vector2Int usedPropSize = _propSize - Vector2Int.one;
+
 						//jeez :/
 						if(_propSpawningInfo.PropComponent.ZPosWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(0, _propSize.y), _propSize))
+							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(0, usedPropSize.y), usedPropSize))
 								localWallPositions.Add(pos);
 						if(_propSpawningInfo.PropComponent.XPosWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(_propSize, new Vector2Int(_propSize.x, 0)))
+							foreach(Vector2Int pos in PositionsInBox(usedPropSize, new Vector2Int(usedPropSize.x, 0)))
 								localWallPositions.Add(pos);
 						if(_propSpawningInfo.PropComponent.ZNegWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(_propSize.x, 0), Vector2Int.zero))
+							foreach(Vector2Int pos in PositionsInBox(new Vector2Int(usedPropSize.x, 0), Vector2Int.zero))
 								localWallPositions.Add(pos);
 						if(_propSpawningInfo.PropComponent.XNegWallPlacement)
-							foreach(Vector2Int pos in PositionsInBox(Vector2Int.zero, new Vector2Int(0, _propSize.y)))
+							foreach(Vector2Int pos in PositionsInBox(Vector2Int.zero, new Vector2Int(0, usedPropSize.y)))
 								localWallPositions.Add(pos);
 
 						foreach(Vector2Int position in localWallPositions)
@@ -574,11 +576,29 @@ namespace LevelGeneration
 						}
 						if(requiredWallPositions.Count > 0)
 						{
+							bool allWallPositionsHaveHalls = true;
+							foreach(Vector2Int wallPostion in requiredWallPositions)
+							{
+								if(!PositionIsWithinLevel(wallPostion) || !levelTiles[wallPostion.x][wallPostion.y].HasWall)
+								{
+									allWallPositionsHaveHalls = false;
+									break;
+								}
+							}
+							if(!allWallPositionsHaveHalls)
+							{
+								canPlacePropHere = false;
+								break;
+							}
 							//check each of the positions in required wallpositions and disallow placement if any of the tiles at those positions do not have a wall on them.
 						}
 					}
 					if(canPlacePropHere)
 					{
+						foreach(Vector2Int wallPosition in requiredWallPositions)
+						{
+							allUsedWallPositions.Add(wallPosition);
+						}
 						foreach(Vector2Int pos in positionsInRotatedProp)
 						{
 							//Debug.Log($"{_propSpawningInfo.PropGameObject.name}: {pos * 2}");
@@ -595,9 +615,20 @@ namespace LevelGeneration
 			}
 			return false;
 		}
-		
+
+		private List<Vector2Int> allUsedWallPositions = new List<Vector2Int>();
+		private void OnDrawGizmos()
+		{
+			Gizmos.color = Color.green;
+			foreach(Vector2Int position in allUsedWallPositions)
+			{
+				Gizmos.DrawSphere(new Vector3(position.x * tileSize, 1, position.y * tileSize), 1);
+			}
+		}
+
 		private void SetProps()
 		{
+			allUsedWallPositions.Clear();
 			//foreach(Room room in rooms) cannot be used here since the variable being iterated on cannot be passed into a funciton as a ref which is what is needed for TryPlaceProp()
 			for(int i = 0; i < rooms.Count; i++)
 			{

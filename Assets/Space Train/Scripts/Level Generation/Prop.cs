@@ -23,7 +23,7 @@ public class Prop : MonoBehaviour
     public bool XPosWallPlacement => xPosWallPlacement;
     [SerializeField, Tooltip("checking this means that the negative z side of the prop must be placed against a wall during level generation")] 
     private bool zNegWallPlacement;
-    public bool ZNegWallPlacement => ZNegWallPlacement;
+    public bool ZNegWallPlacement => zNegWallPlacement;
     [SerializeField, Tooltip("checking this means that the negative x side of the prop must be placed against a wall during level generation")]
     private bool xNegWallPlacement;
     public bool XNegWallPlacement => xNegWallPlacement;
