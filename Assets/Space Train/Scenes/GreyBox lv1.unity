@@ -503,13 +503,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.19551454, y: 0.7933443, z: -0.3263969, w: -0.47523054}
-  m_LocalPosition: {x: 16.51041, y: 4.1684585, z: -11.968268}
+  m_LocalRotation: {x: -0.21740717, y: 0.75893325, z: -0.31224027, w: -0.528451}
+  m_LocalPosition: {x: 19.53, y: 7.15, z: -12.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 44.726, y: 249.7, z: 0.001}
 --- !u!1 &1850566978
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,7 +600,7 @@ Transform:
   m_GameObject: {fileID: 1850566978}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 12, y: 0, z: -16}
-  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_LocalScale: {x: 26.1, y: 1, z: 21.31}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -624,14 +624,6 @@ PrefabInstance:
       propertyPath: Camera
       value: 
       objectReference: {fileID: 963194227}
-    - target: {fileID: 4771868401002621007, guid: 1d97ed113b7a92342b89cd2f6c67d90f, type: 3}
-      propertyPath: RunSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4771868401002621007, guid: 1d97ed113b7a92342b89cd2f6c67d90f, type: 3}
-      propertyPath: MovementSpeed
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8904434945986196501, guid: 1d97ed113b7a92342b89cd2f6c67d90f, type: 3}
       propertyPath: m_RootOrder
       value: 3

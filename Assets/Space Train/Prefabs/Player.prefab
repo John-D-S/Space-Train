@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RotateTowardMouse: 0
-  MovementSpeed: 2
+  MovementSpeed: 3
   RunSpeed: 5
   RotationSpeed: 5
   Camera: {fileID: 0}
