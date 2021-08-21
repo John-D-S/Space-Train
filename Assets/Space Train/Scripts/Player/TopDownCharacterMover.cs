@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerVisability
+{
+    Visable, Invisable
+}
+
 [RequireComponent(typeof(InputHandler))]
 public class TopDownCharacterMover : MonoBehaviour
 {
@@ -13,23 +18,39 @@ public class TopDownCharacterMover : MonoBehaviour
 
     [SerializeField]
     private float MovementSpeed;
+    
+    [SerializeField]
+    private float RunSpeed;
+    
     [SerializeField]
     private float RotationSpeed;
 
     [SerializeField]
     private Camera Camera;
 
+    public PlayerVisability myPlayerVisability;
+    
     private void Awake()
     {
         _input = GetComponent<InputHandler>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
-        var targetVector = new Vector3(_input.InputVector.x, 0, _input.InputVector.y);
-        var movementVector = MoveTowardTarget(targetVector);
+        myPlayerVisability = PlayerVisability.Visable;
+    }
+
+    // This will be called in Animations at the end of stealth animation.
+    public void MakePlayerInvisable()
+    {
+        myPlayerVisability = PlayerVisability.Invisable;
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        Vector3 targetVector = new Vector3(_input.InputVector.x, 0, _input.InputVector.y);
+        Vector3 movementVector = MoveTowardTarget(targetVector);
 
         if (!RotateTowardMouse)
         {
@@ -48,7 +69,7 @@ public class TopDownCharacterMover : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance: 300f))
         {
-            var target = hitInfo.point;
+            Vector3 target = hitInfo.point;
             target.y = transform.position.y;
             transform.LookAt(target);
         }
@@ -56,12 +77,28 @@ public class TopDownCharacterMover : MonoBehaviour
 
     private Vector3 MoveTowardTarget(Vector3 targetVector)
     {
-        var speed = MovementSpeed * Time.deltaTime;
+        float speed = new float();
+        
+        // If Walking Speed = Walking.
+        if(_input.myPlayerState == PlayerState.Walking)
+        {
+            speed = MovementSpeed * Time.deltaTime;
+        }
+        // If Running Speed = Running.
+        else if(_input.myPlayerState == PlayerState.Running)
+        {
+            speed = RunSpeed * Time.deltaTime;
+        }
+        // If Idle Speed = 0.
+        else
+        {
+            speed = 0;
+        }
         // transform.Translate(targetVector * (MovementSpeed * Time.deltaTime)); Demonstrate why this doesn't work
         //transform.Translate(targetVector * (MovementSpeed * Time.deltaTime), Camera.gameObject.transform);
 
         targetVector = Quaternion.Euler(0, Camera.gameObject.transform.rotation.eulerAngles.y, 0) * targetVector;
-        var targetPosition = transform.position + targetVector * speed;
+        Vector3 targetPosition = transform.position + targetVector * speed;
         transform.position = targetPosition;
         return targetVector;
     }
@@ -69,7 +106,7 @@ public class TopDownCharacterMover : MonoBehaviour
     private void RotateTowardMovementVector(Vector3 movementDirection)
     {
         if(movementDirection.magnitude == 0) { return; }
-        var rotation = Quaternion.LookRotation(movementDirection);
+        Quaternion rotation = Quaternion.LookRotation(movementDirection);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, RotationSpeed);
     }
 }
