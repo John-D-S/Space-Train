@@ -67,7 +67,7 @@ public class InputHandler : MonoBehaviour
 	    myAnim.SetBool("Idle", false);
 	    myAnim.SetBool("Walking", true);
 	    myAnim.SetBool("Running", false);
-	    myPlayerState = PlayerState.Idle;
+	    myPlayerState = PlayerState.Walking;
     }
 
     // This is the moving running state.
@@ -76,7 +76,7 @@ public class InputHandler : MonoBehaviour
 	    myAnim.SetBool("Idle", false);
 	    myAnim.SetBool("Walking", false);
 	    myAnim.SetBool("Running", true);
-	    myPlayerState = PlayerState.Idle;
+	    myPlayerState = PlayerState.Running;
     }
 
 #endregion
@@ -92,9 +92,9 @@ public class InputHandler : MonoBehaviour
 		    InputVector = new Vector2(h, v);
 
 		    // This is for the player movement
-		    if(InputVector.magnitude > 0.05f)
+		    if(InputVector.magnitude != 0)
 		    {
-			    if(Input.GetKey(KeyCode.LeftShift))
+			    if(Input.GetKeyDown(KeyCode.LeftShift))
 			    {
 				    // Starts Running.
 				    RunningState();
