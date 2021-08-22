@@ -36,6 +36,10 @@ public class InputHandler : MonoBehaviour
     // The Animator.
     public Animator myAnim;
     
+    // Run timer.
+    private float turningTimer;
+    [SerializeField] private float maxTurningTimer;
+    
     // TopDownCharacterMover.
     public TopDownCharacterMover myTopDownCharacterMover;
     private void Awake()
@@ -48,6 +52,7 @@ public class InputHandler : MonoBehaviour
     {
 	    IdleState();
 	    myPlayerStatus = PlayerStatus.Alive;
+	    turningTimer = maxTurningTimer;
     }
 
 #region Player States
@@ -92,17 +97,32 @@ public class InputHandler : MonoBehaviour
 		    InputVector = new Vector2(h, v);
 
 		    // This is for the player movement.
-		    if(InputVector.magnitude != 0)
+		    if(InputVector.magnitude != 0 || myPlayerState == PlayerState.Running || myPlayerState == PlayerState.Walking)
 		    {
-			    if(Input.GetKey(KeyCode.LeftShift))
+			    // This will not put the player into an idle state if they just turn side to side.
+			    if (InputVector.magnitude == 0)
+			    {
+				    turningTimer -= Time.deltaTime;
+			    }
+			    else
+			    {
+				    turningTimer = maxTurningTimer;
+			    }
+			    
+			    if(Input.GetKey(KeyCode.LeftShift) && turningTimer > 0)
 			    {
 				    // Starts Running.
 				    RunningState();
 			    }
-			    else
+			    else if (turningTimer > 0)
 			    {
 				    // If not Starts Walking.
 				    WalkingState();
+			    }
+			    else
+			    {
+				    // Go to Idle state.
+				    IdleState();
 			    }
 		    }
 		    else

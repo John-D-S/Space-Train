@@ -24,6 +24,9 @@ public class TopDownCharacterMover : MonoBehaviour
     
     [SerializeField]
     private float RotationSpeed;
+    
+    [SerializeField]
+    private float RunRotationSpeed;
 
     [SerializeField]
     private Camera Camera;
@@ -60,9 +63,9 @@ public class TopDownCharacterMover : MonoBehaviour
         {
             RotateFromMouseVector();
         }
-
     }
 
+    // Implementing IF we want to follow the mouse.
     private void RotateFromMouseVector()
     {
         Ray ray = Camera.ScreenPointToRay(_input.MousePosition);
@@ -94,8 +97,6 @@ public class TopDownCharacterMover : MonoBehaviour
         {
             speed = 0;
         }
-        // transform.Translate(targetVector * (MovementSpeed * Time.deltaTime)); Demonstrate why this doesn't work
-        //transform.Translate(targetVector * (MovementSpeed * Time.deltaTime), Camera.gameObject.transform);
 
         targetVector = Quaternion.Euler(0, Camera.gameObject.transform.rotation.eulerAngles.y, 0) * targetVector;
         Vector3 targetPosition = transform.position + targetVector * speed;
@@ -105,8 +106,25 @@ public class TopDownCharacterMover : MonoBehaviour
 
     private void RotateTowardMovementVector(Vector3 movementDirection)
     {
+        float rotatingSpeed = new float();
+        
+        // If rotatingSpeed = Walking.
+        if(_input.myPlayerState == PlayerState.Walking)
+        {
+            rotatingSpeed = RotationSpeed;
+        }
+        // If rotatingSpeed = Running.
+        else if(_input.myPlayerState == PlayerState.Running)
+        {
+            rotatingSpeed = RunRotationSpeed;
+        }
+        // If Idle rotatingSpeed = 0.
+        else
+        {
+            rotatingSpeed = 0;
+        }
         if(movementDirection.magnitude == 0) { return; }
         Quaternion rotation = Quaternion.LookRotation(movementDirection);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, RotationSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotatingSpeed);
     }
 }
