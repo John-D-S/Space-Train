@@ -13,7 +13,6 @@ public enum PlayerStatus
 	Alive, Dead
 }
 	
-[RequireComponent(typeof(TopDownCharacterMover))]
 public class InputHandler : MonoBehaviour
 {
     public Vector2 InputVector { get; private set; }
