@@ -641,8 +641,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d415d6452dbb6cc4c8352b5b6117b671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  yMinLimit: -20
-  yMaxLimit: 80
   player: {fileID: 1938670541}
   heightAbovePlayer: 0
   cameraRotation: {x: 0, y: 0, z: 0}
