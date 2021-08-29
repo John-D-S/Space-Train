@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Space Train/Scenes/Level Generation.unity
     guid: 41618f54f5ebc124a9920fdb5f130183
   - enabled: 1
-    path: Assets/Space Train/Scenes/GreyBox lv1.unity
+    path: Assets/Space Train/Scenes/GreyBox.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

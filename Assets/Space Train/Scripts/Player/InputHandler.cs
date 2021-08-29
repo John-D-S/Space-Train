@@ -133,25 +133,8 @@ namespace SpaceTrain.Player
 				{
 					IdleState();
 				}
-		    
-				// If press space will turn invisable.
-				if(Input.GetButtonDown("Jump"))
-				{
-					// Basically Activate stealth or not.
-					if(myTopDownCharacterMover.myPlayerVisability == PlayerVisability.Visable)
-					{
-						myAnim.SetTrigger("Activate Stealth");
-					}
-
-					if(myTopDownCharacterMover.myPlayerVisability == PlayerVisability.Invisable)
-					{
-						myAnim.ResetTrigger("Activate Stealth");
-						myTopDownCharacterMover.myPlayerVisability = PlayerVisability.Visable;
-					}
-				}
 				MousePosition = Input.mousePosition;
 			}
 		}
-
 	}
 }

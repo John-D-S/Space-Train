@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuSceneName: Menu
-  gameSceneName: Main
+  gameSceneName: Level Generation
   greyboxSceneName: Greybox
   resolutionDropdown: {fileID: 0}
   masterMixer: {fileID: 0}
@@ -345,7 +345,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5815655814846535894, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 333.311
       objectReference: {fileID: 0}
     - target: {fileID: 5815655814846535894, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -449,11 +449,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5815655816182248373, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5815655816182248373, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5815655816182248373, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_SizeDelta.x
@@ -469,7 +469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5815655816182248373, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -574.4878
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5815655816298957796, guid: c6b3bbb59bab9544ba63acc01cac190c, type: 3}
       propertyPath: m_AnchorMax.y
