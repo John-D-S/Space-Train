@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
-  - 
+  - UI Front
+  - Particles
+  - UI Back
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI Front
+    uniqueID: 2188129801
+    locked: 0
+  - name: Particles
+    uniqueID: 3871124237
+    locked: 0
+  - name: UI Back
+    uniqueID: 664435307
     locked: 0
