@@ -34,20 +34,6 @@ namespace SpaceTrain.Player
 		// Will Hold Visability in the InputHandler.
 		public PlayerStatus myPlayerStatus;
 
-		[Header("Player Identities")]
-		// The current identity of the player.
-		public PlayerIdentity myPlayerIdentity = PlayerIdentity.None;
-		
-		// A list of all the textures for each Identity.
-		public List<Texture> identityTexture = new List<Texture>();
-		
-		[Header("Currently Changed Identity")]
-		// Has the player recently changed identites.
-		public bool recentlyChangedIdentities = false;
-		// How long people will be identified after the player changes Identites
-		[Range(0f,2f)] public float timeToChangeIdenities = 0.2f;
-		private float changedIdentitesTimer = 0;
-
 		[Header("Player Components")]
 		// This will be the render that will change with the player.
 		public Renderer characterRenderer;
@@ -69,20 +55,9 @@ namespace SpaceTrain.Player
 		private void Start()
 		{
 			IdleState();
-			NoIdentity();
 			myPlayerStatus = PlayerStatus.Alive;
 			turningTimer = maxTurningTimer;
 		}
-
-	#region Player Identites
-
-		// This is called when the player is back to their base Idenity.
-		private void NoIdentity()
-		{
-			
-		}
-
-	#endregion
 
 	#region Player States
 	

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceTrain.Player
@@ -18,11 +16,17 @@ namespace SpaceTrain.Player
 	    [Header("Current Player Values")]
 	    // This is the current Player Identity.
 	    public PlayerIdentity currentPlayerIdentity;
-	    // This is the current player material.
-	    public Texture2D currentPlayerMaterial;
 	    // This is the UI of the current selected Identity.
-	    public GameObject selectedIdentiyUI;
+	    public PlayerIdentity selectedIdentiy;
 
+
+	    [Header("Currently Changed Identity")]
+	    // Has the player recently changed identites.
+	    public bool recentlyChangedIdentities;
+	    // How long people will be identified after the player changes Identites
+	    [Range(0f,2f)] public float timeToChangeIdenities = 0.2f;
+	    private float changedIdentitesTimer = 0;
+	    
 	    [Header("None Identity")]
 	    // The Material of the none identity.
 	    public Texture2D nonePlayerMaterial;
@@ -63,69 +67,200 @@ namespace SpaceTrain.Player
 		    SelectingNoIdentity();
 	    }
 
+	    private void Update()
+	    {
+		    // If press space select that identity.
+		    if(Input.GetKey(KeyCode.Space))
+		    {
+			    ChangeIdentity(selectedIdentiy);
+		    }
 
+		    // Basically if they have just changed identities it resets the timer and makes
+		    // RecentlyChangedIdentities = true.
+		    if(changedIdentitesTimer > 0)
+		    {
+			    recentlyChangedIdentities = true;
+			    changedIdentitesTimer -= Time.deltaTime;
+		    }
+		    
+		    // Go up a selected identity.
+		    if(Input.GetKeyDown(KeyCode.UpArrow))
+		    {
+			    switch(selectedIdentiy)
+			    {
+				    case PlayerIdentity.None:
+					    SelectingGuardIdentity();
+					    break;
+				    case PlayerIdentity.Passenger:
+					    SelectingNoIdentity();
+					    break;
+				    case PlayerIdentity.Worker:
+					    SelectingPassengerIdentity();
+					    break;
+				    case PlayerIdentity.Guard:
+					    SelectingWorkerIdentity();
+					    break;
+				    default:
+					    throw new ArgumentOutOfRangeException();
+			    }
+		    }
+		    
+		    // Go down selecting an identity.
+		    if(Input.GetKeyDown(KeyCode.DownArrow))
+		    {
+			    switch(selectedIdentiy)
+			    {
+				    case PlayerIdentity.None:
+					    SelectingPassengerIdentity();
+					    break;
+				    case PlayerIdentity.Passenger:
+					    SelectingWorkerIdentity();
+					    break;
+				    case PlayerIdentity.Worker:
+					    SelectingGuardIdentity();
+					    break;
+				    case PlayerIdentity.Guard:
+					    SelectingNoIdentity();
+					    break;
+				    default:
+					    throw new ArgumentOutOfRangeException();
+			    }
+		    }
+	    }
+
+
+	    // Turns on and off the selection.
 	    #region Selecting Identities
 
 		    // Select No Identity.
 		    private void SelectingNoIdentity()
 		    {
+			    selectedIdentiy = PlayerIdentity.None;
 			    noneSelectedIdentiyUI.gameObject.SetActive(true);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
 			    workerSelectedIdentiyUI.gameObject.SetActive(false);
 		    }
 		    
-		    // Select Citizen Identity.
-		    private void SelectingCitizenIdentity()
+		    // Select Passenger Identity.
+		    private void SelectingPassengerIdentity()
 		    {
+			    selectedIdentiy = PlayerIdentity.Passenger;
 			    noneSelectedIdentiyUI.gameObject.SetActive(false);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(true);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
 			    workerSelectedIdentiyUI.gameObject.SetActive(false);
 		    }
 		    
-		    // Select Guard Identity.
-		    private void SelectingGuardIdentity()
-		    {
-			    noneSelectedIdentiyUI.gameObject.SetActive(false);
-			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
-			    guardSelectedIdentiyUI.gameObject.SetActive(true);
-			    workerSelectedIdentiyUI.gameObject.SetActive(false);
-		    }
-		    
 		    // Select Worker Identity.
 		    private void SelectingWorkerIdentity()
 		    {
+			    selectedIdentiy = PlayerIdentity.Worker;
 			    noneSelectedIdentiyUI.gameObject.SetActive(false);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
 			    workerSelectedIdentiyUI.gameObject.SetActive(true);
 		    }
 		    
+		    // Select Guard Identity.
+		    private void SelectingGuardIdentity()
+		    {
+			    selectedIdentiy = PlayerIdentity.Guard;
+			    noneSelectedIdentiyUI.gameObject.SetActive(false);
+			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
+			    guardSelectedIdentiyUI.gameObject.SetActive(true);
+			    workerSelectedIdentiyUI.gameObject.SetActive(false);
+		    }
+
 	    #endregion
 
-	    #region Player Identities
+	    #region Change Player Identities
 
+		    private void ChangeIdentity(PlayerIdentity _identityToChangeTo)
+		    {
+			    // If the same Identity as the current one, return.
+			    if(_identityToChangeTo == currentPlayerIdentity)
+			    {
+				    return;
+			    }
+			    
+			    // Will change the the selected identity.
+			    switch(_identityToChangeTo)
+			    {
+				    case PlayerIdentity.None:
+					    ChangeToNoneIdentity();
+					    break;
+				    case PlayerIdentity.Passenger:
+					    ChangeToPassengerIdentity();
+					    break;
+				    case PlayerIdentity.Worker:
+					    ChangeToWorkerIdentity();
+					    break;
+				    case PlayerIdentity.Guard:
+					    ChangeToGuardIdentity();
+					    break;
+				    default:
+					    throw new ArgumentOutOfRangeException(nameof(_identityToChangeTo), _identityToChangeTo, null);
+			    }
+			    
+			    // Will reset the identity change timer.
+			    changedIdentitesTimer = timeToChangeIdenities;
+		    }
 		    // This is for when you change to no identity.
 		    public void ChangeToNoneIdentity()
 		    {
 			    // Make the player None Identitity.
 			    currentPlayerIdentity = PlayerIdentity.None;
 			    // Make the players current material = none;
-			    currentPlayerMaterial = nonePlayerMaterial;
+			    myPlayerRenderer.material.mainTexture = nonePlayerMaterial;
 			    // Make the UI of the Selected Material = On;
 			    noneCurrentIdentityUI.gameObject.SetActive(true);
+			    passengerCurrentIdentityUI.gameObject.SetActive(false);
+			    workerCurrentIdentityUI.gameObject.SetActive(false);
+			    guardCurrentIdentityUI.gameObject.SetActive(false);
 		    }
 		    
-		    // This is for when you change to no identity.
+		    
+		    // This is for when you change to Passenger identity.
+		    public void ChangeToPassengerIdentity()
+		    {
+			    // Make the player None Identitity.
+			    currentPlayerIdentity = PlayerIdentity.Passenger;
+			    // Make the players current material = none;
+			    myPlayerRenderer.material.mainTexture = passengerPlayerMaterial;
+			    // Make the UI of the Selected Material = On;
+			    noneCurrentIdentityUI.gameObject.SetActive(false);
+			    passengerCurrentIdentityUI.gameObject.SetActive(true);
+			    workerCurrentIdentityUI.gameObject.SetActive(false);
+			    guardCurrentIdentityUI.gameObject.SetActive(false);
+		    }
+		    
+		    // This is for when you change to worker identity.
+		    public void ChangeToWorkerIdentity()
+		    {
+			    // Make the player None Identitity.
+			    currentPlayerIdentity = PlayerIdentity.Worker;
+			    // Make the players current material = none;
+			    myPlayerRenderer.material.mainTexture = workerPlayerMaterial;
+			    // Make the UI of the Selected Material = On;
+			    noneCurrentIdentityUI.gameObject.SetActive(false);
+			    passengerCurrentIdentityUI.gameObject.SetActive(false);
+			    workerCurrentIdentityUI.gameObject.SetActive(true);
+			    guardCurrentIdentityUI.gameObject.SetActive(false);
+		    }
+		    
+		    // This is for when you change to guard identity.
 		    public void ChangeToGuardIdentity()
 		    {
 			    // Make the player None Identitity.
-			    currentPlayerIdentity = PlayerIdentity.None;
+			    currentPlayerIdentity = PlayerIdentity.Guard;
 			    // Make the players current material = none;
-			    currentPlayerMaterial = nonePlayerMaterial;
+			    myPlayerRenderer.material.mainTexture = guardPlayerMaterial;
 			    // Make the UI of the Selected Material = On;
-			    noneCurrentIdentityUI.gameObject.SetActive(true);
+			    noneCurrentIdentityUI.gameObject.SetActive(false);
+			    passengerCurrentIdentityUI.gameObject.SetActive(false);
+			    workerCurrentIdentityUI.gameObject.SetActive(false);
+			    guardCurrentIdentityUI.gameObject.SetActive(true);
 		    }
 		    
 	    #endregion
@@ -133,7 +268,7 @@ namespace SpaceTrain.Player
     
     public enum PlayerIdentity
     {
-	    None, Guard, Citizen, Worker
+	    None, Passenger, Worker, Guard
     }
     
     // ODIN NOT HERE!!
