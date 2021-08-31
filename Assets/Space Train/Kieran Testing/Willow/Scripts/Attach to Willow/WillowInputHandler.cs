@@ -190,7 +190,7 @@ namespace Willow
 				else
 				{
 					// Go into an Idle State.
-					// To note this "shouldn't" hit
+					// To note this "shouldn't" hit.
 					IdleState();
 				}
 			
