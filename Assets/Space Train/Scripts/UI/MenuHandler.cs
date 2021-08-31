@@ -9,9 +9,7 @@ using UnityEngine.Audio;
 
 namespace SpaceTrain.UI
 {
-    /// <summary>
-    /// holds the Static menuHandler
-    /// </summary>
+    /// <summary> Holds the Static menuHandler. </summary>
     public static class TheMenuHandler
     {
         public static MenuHandler theMenuHandler;

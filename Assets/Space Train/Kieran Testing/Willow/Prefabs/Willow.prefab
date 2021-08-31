@@ -9620,7 +9620,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2508510856679658069}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 11.324038, y: 0.5, z: -13.938244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9714,6 +9714,7 @@ MonoBehaviour:
   myAnim: {fileID: 2508510856679658074}
   myWillowTopDownCharacterMover: {fileID: 8890479142056383855}
   maxTurningTimer: 0.1
+  myWillowVisibility: 0
 --- !u!114 &8890479142056383855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9731,8 +9732,7 @@ MonoBehaviour:
   RunSpeed: 6.68
   RotationSpeed: 4
   RunRotationSpeed: 11
-  Camera: {fileID: 0}
-  myWillowVisability: 0
+  myCamera: {fileID: 0}
 --- !u!1 &2514687559886938297
 GameObject:
   m_ObjectHideFlags: 0

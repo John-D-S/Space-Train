@@ -34,6 +34,7 @@ namespace Willow
 		public WillowMovementState myWillowMovementState = WillowMovementState.Idle;
 		
 		/// <summary> The Player Status if they are Alive/Dead. </summary>
+		[Header("hi")]
 		public WillowAliveStatus myWillowAliveStatus = WillowAliveStatus.Alive;
 		
 		/// <summary> The Animator, Grabs on Awake - !!! (Make Sure it has the Willow Character Controller) !!! </summary>

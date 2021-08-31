@@ -5,28 +5,28 @@ using UnityEngine;
 
 namespace SpaceTrain.Player
 {
+	/// <summary> The Movement State the player is in.</summary>
 	public enum PlayerState
 	{
 		Idle,Walking,Running,Dead
 	}
 
+	/// <summary> If the player is Alive or Dead. </summary>
 	public enum PlayerStatus
 	{
 		Alive, Dead
 	}
 
+	/// <summary> Will keep track on the State, Animator and Input Controller of the player. </summary>
 	public class InputHandler : MonoBehaviour
 	{
+		/// <summary> This will take in the horizontal and vertical input. </summary>
 		public Vector2 InputVector { get; private set; }
+		
+		/// <summary> The mouse position. ONLY FOR if you are using rotate towards mouse direction. </summary>
 		public Vector3 MousePosition { get; private set; }
 
-		public bool isChangeMenuOpen = false;
-    
-		// Will be to pause the game but taking out for now 
-		public bool isInGamePaused = false;
-
-		// The Movement State the player is in.
-		// This will change the movement speed of the player.
+		/// <summary>The Movement State the player is in. This will change the movement speed of the player. </summary>
 		public PlayerState myPlayerState;
 
 		// The Player Status of the Player.
@@ -46,6 +46,7 @@ namespace SpaceTrain.Player
     
 		// TopDownCharacterMover.
 		public TopDownCharacterMover myTopDownCharacterMover;
+		
 		private void Awake()
 		{
 			myAnim = GetComponentInChildren<Animator>();

@@ -82,6 +82,10 @@ namespace SpaceTrain.Player
 			    recentlyChangedIdentities = true;
 			    changedIdentitesTimer -= Time.deltaTime;
 		    }
+		    else
+		    {
+			    recentlyChangedIdentities = false;
+		    }
 		    
 		    // Go up a selected identity.
 		    if(Input.GetKeyDown(KeyCode.UpArrow))

@@ -5,7 +5,9 @@ using System.Linq;
 
 using Unity.AI.Navigation;
 
-using UnityEditor.AI;
+// Needed to comment this out for the build for some reason :)
+// ~Kieran 6:03 Tuesday 31/8/2021
+//using UnityEditor.AI;
 
 using UnityEngine;
 
