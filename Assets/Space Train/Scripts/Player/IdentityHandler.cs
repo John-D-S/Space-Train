@@ -15,9 +15,9 @@ namespace SpaceTrain.Player
 	    // This is all the current player values.
 	    [Header("Current Player Values")]
 	    // This is the current Player Identity.
-	    public PlayerIdentity currentPlayerIdentity;
+	    public CharacterIdentity currentPlayerIdentity;
 	    // This is the UI of the current selected Identity.
-	    public PlayerIdentity selectedIdentiy;
+	    public CharacterIdentity selectedIdentiy;
 
 
 	    [Header("Currently Changed Identity")]
@@ -92,16 +92,16 @@ namespace SpaceTrain.Player
 		    {
 			    switch(selectedIdentiy)
 			    {
-				    case PlayerIdentity.None:
+				    case CharacterIdentity.None:
 					    SelectingGuardIdentity();
 					    break;
-				    case PlayerIdentity.Passenger:
+				    case CharacterIdentity.Passenger:
 					    SelectingNoIdentity();
 					    break;
-				    case PlayerIdentity.Worker:
+				    case CharacterIdentity.Worker:
 					    SelectingPassengerIdentity();
 					    break;
-				    case PlayerIdentity.Guard:
+				    case CharacterIdentity.Guard:
 					    SelectingWorkerIdentity();
 					    break;
 				    default:
@@ -114,16 +114,16 @@ namespace SpaceTrain.Player
 		    {
 			    switch(selectedIdentiy)
 			    {
-				    case PlayerIdentity.None:
+				    case CharacterIdentity.None:
 					    SelectingPassengerIdentity();
 					    break;
-				    case PlayerIdentity.Passenger:
+				    case CharacterIdentity.Passenger:
 					    SelectingWorkerIdentity();
 					    break;
-				    case PlayerIdentity.Worker:
+				    case CharacterIdentity.Worker:
 					    SelectingGuardIdentity();
 					    break;
-				    case PlayerIdentity.Guard:
+				    case CharacterIdentity.Guard:
 					    SelectingNoIdentity();
 					    break;
 				    default:
@@ -139,7 +139,7 @@ namespace SpaceTrain.Player
 		    // Select No Identity.
 		    private void SelectingNoIdentity()
 		    {
-			    selectedIdentiy = PlayerIdentity.None;
+			    selectedIdentiy = CharacterIdentity.None;
 			    noneSelectedIdentiyUI.gameObject.SetActive(true);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
@@ -149,7 +149,7 @@ namespace SpaceTrain.Player
 		    // Select Passenger Identity.
 		    private void SelectingPassengerIdentity()
 		    {
-			    selectedIdentiy = PlayerIdentity.Passenger;
+			    selectedIdentiy = CharacterIdentity.Passenger;
 			    noneSelectedIdentiyUI.gameObject.SetActive(false);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(true);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
@@ -159,7 +159,7 @@ namespace SpaceTrain.Player
 		    // Select Worker Identity.
 		    private void SelectingWorkerIdentity()
 		    {
-			    selectedIdentiy = PlayerIdentity.Worker;
+			    selectedIdentiy = CharacterIdentity.Worker;
 			    noneSelectedIdentiyUI.gameObject.SetActive(false);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
 			    guardSelectedIdentiyUI.gameObject.SetActive(false);
@@ -169,7 +169,7 @@ namespace SpaceTrain.Player
 		    // Select Guard Identity.
 		    private void SelectingGuardIdentity()
 		    {
-			    selectedIdentiy = PlayerIdentity.Guard;
+			    selectedIdentiy = CharacterIdentity.Guard;
 			    noneSelectedIdentiyUI.gameObject.SetActive(false);
 			    passengerSelectedIdentiyUI.gameObject.SetActive(false);
 			    guardSelectedIdentiyUI.gameObject.SetActive(true);
@@ -180,7 +180,7 @@ namespace SpaceTrain.Player
 
 	    #region Change Player Identities
 
-		    private void ChangeIdentity(PlayerIdentity _identityToChangeTo)
+		    private void ChangeIdentity(CharacterIdentity _identityToChangeTo)
 		    {
 			    // If the same Identity as the current one, return.
 			    if(_identityToChangeTo == currentPlayerIdentity)
@@ -191,16 +191,16 @@ namespace SpaceTrain.Player
 			    // Will change the the selected identity.
 			    switch(_identityToChangeTo)
 			    {
-				    case PlayerIdentity.None:
+				    case CharacterIdentity.None:
 					    ChangeToNoneIdentity();
 					    break;
-				    case PlayerIdentity.Passenger:
+				    case CharacterIdentity.Passenger:
 					    ChangeToPassengerIdentity();
 					    break;
-				    case PlayerIdentity.Worker:
+				    case CharacterIdentity.Worker:
 					    ChangeToWorkerIdentity();
 					    break;
-				    case PlayerIdentity.Guard:
+				    case CharacterIdentity.Guard:
 					    ChangeToGuardIdentity();
 					    break;
 				    default:
@@ -214,7 +214,7 @@ namespace SpaceTrain.Player
 		    public void ChangeToNoneIdentity()
 		    {
 			    // Make the player None Identitity.
-			    currentPlayerIdentity = PlayerIdentity.None;
+			    currentPlayerIdentity = CharacterIdentity.None;
 			    // Make the players current material = none;
 			    myPlayerRenderer.material.mainTexture = nonePlayerMaterial;
 			    // Make the UI of the Selected Material = On;
@@ -229,7 +229,7 @@ namespace SpaceTrain.Player
 		    public void ChangeToPassengerIdentity()
 		    {
 			    // Make the player None Identitity.
-			    currentPlayerIdentity = PlayerIdentity.Passenger;
+			    currentPlayerIdentity = CharacterIdentity.Passenger;
 			    // Make the players current material = none;
 			    myPlayerRenderer.material.mainTexture = passengerPlayerMaterial;
 			    // Make the UI of the Selected Material = On;
@@ -243,7 +243,7 @@ namespace SpaceTrain.Player
 		    public void ChangeToWorkerIdentity()
 		    {
 			    // Make the player None Identitity.
-			    currentPlayerIdentity = PlayerIdentity.Worker;
+			    currentPlayerIdentity = CharacterIdentity.Worker;
 			    // Make the players current material = none;
 			    myPlayerRenderer.material.mainTexture = workerPlayerMaterial;
 			    // Make the UI of the Selected Material = On;
@@ -257,7 +257,7 @@ namespace SpaceTrain.Player
 		    public void ChangeToGuardIdentity()
 		    {
 			    // Make the player None Identitity.
-			    currentPlayerIdentity = PlayerIdentity.Guard;
+			    currentPlayerIdentity = CharacterIdentity.Guard;
 			    // Make the players current material = none;
 			    myPlayerRenderer.material.mainTexture = guardPlayerMaterial;
 			    // Make the UI of the Selected Material = On;
@@ -270,7 +270,7 @@ namespace SpaceTrain.Player
 	    #endregion
     }
     
-    public enum PlayerIdentity
+    public enum CharacterIdentity
     {
 	    None, Passenger, Worker, Guard
     }
@@ -282,7 +282,7 @@ namespace SpaceTrain.Player
      {
 	     [Header("Identity Name")]
 	     // This is the name of the Identity.
-	     public PlayerIdentity playerIdentityName;
+	     public CharacterIdentity playerIdentityName;
 	     [Header("Identity Material")]
 	     // The Material of this identity.
 	     public Material identityMaterial;
