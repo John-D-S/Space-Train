@@ -29,15 +29,32 @@ public class AgentController : MonoBehaviour
 
     public void TurnToFace(Vector3 _position)
     {
-        StartCoroutine(TurnTowards(_position));
+        StartCoroutine(TurnTowards(_position, -1));
     }
-
-    private IEnumerator TurnTowards(Vector3 _position)
+    public void TurnToFace(Vector3 _position, float _timeToKeepTurning)
     {
-        while(agent.isStopped)
+        StartCoroutine(TurnTowards(_position, _timeToKeepTurning));
+    }
+    
+    /// <summary>
+    /// Will cause the agent to turn towards a point for as long as they are still for timeToKeepTurning
+    /// </summary>
+    /// <param name="_position">The point to turn towards.</param>
+    /// <param name="_timeToKeepTurning">How long to keep turning towards that point. Will be forever if value is negative</param>
+    private IEnumerator TurnTowards(Vector3 _position, float _timeToKeepTurning)
+    {
+        float remainingTime = _timeToKeepTurning;
+        bool timeLeftToTurn = true;
+        while(agent.isStopped && timeLeftToTurn)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.FromToRotation(transform.forward, _position), 10);
-            yield return null;
+            if(_timeToKeepTurning > 0)
+            {
+                remainingTime -= Time.fixedDeltaTime;
+                if(remainingTime <= 0)
+                    timeLeftToTurn = false;
+            }
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.FromToRotation(transform.forward, _position), 360 * Time.fixedDeltaTime);
+            yield return new WaitForFixedUpdate();
         }
     }
     
