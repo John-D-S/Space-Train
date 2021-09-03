@@ -1103,8 +1103,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8337433461370626386}
   - component: {fileID: 2689967686012533544}
-  - component: {fileID: 8718778816115506134}
   - component: {fileID: 8718778816115506135}
+  - component: {fileID: 8718778816115506134}
+  - component: {fileID: 3074612555329495007}
   - component: {fileID: 8718778816115506132}
   - component: {fileID: 8718778816115506133}
   m_Layer: 0
@@ -1151,26 +1152,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8718778816115506134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8718778816115506152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe7d15d1324c5d347b1d5d46fe4f381e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isChangeMenuOpen: 0
-  isInGamePaused: 0
-  myPlayerState: 0
-  myPlayerStatus: 0
-  characterRenderer: {fileID: 0}
-  myAnim: {fileID: 0}
-  maxTurningTimer: 0
-  myTopDownCharacterMover: {fileID: 0}
 --- !u!114 &8718778816115506135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1200,6 +1181,42 @@ MonoBehaviour:
   guardPlayerMaterial: {fileID: 2800000, guid: dd6b22f5c4b881d4dbc61739257ae54b, type: 3}
   guardCurrentIdentityUI: {fileID: 8376197168732585014}
   guardSelectedIdentiyUI: {fileID: 2110413412963127798}
+--- !u!114 &8718778816115506134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8718778816115506152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe7d15d1324c5d347b1d5d46fe4f381e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myPlayerState: 0
+  myPlayerStatus: 0
+  characterRenderer: {fileID: 761956023136533792}
+  myAnim: {fileID: 2689967686012533544}
+  maxTurningTimer: 0.2
+  myTopDownCharacterMover: {fileID: 3074612555329495007}
+--- !u!114 &3074612555329495007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8718778816115506152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a116a6b2e6ba154391d1a695ea81d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RotateTowardMouse: 0
+  MovementSpeed: 4
+  RunSpeed: 8
+  RotationSpeed: 5
+  RunRotationSpeed: 10
+  Camera: {fileID: 0}
 --- !u!54 &8718778816115506132
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1611,6 +1628,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4336e7e54383ef4429875f9cd5bbd5ba, type: 3}
+--- !u!1 &2110413412963127798 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8399250991979802545, guid: 4336e7e54383ef4429875f9cd5bbd5ba, type: 3}
+  m_PrefabInstance: {fileID: 7627289724917300807}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8376197168770200900 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2154877201491725059, guid: 4336e7e54383ef4429875f9cd5bbd5ba, type: 3}
@@ -1649,10 +1671,5 @@ GameObject:
 --- !u!1 &8376197169041334002 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2154877201231241397, guid: 4336e7e54383ef4429875f9cd5bbd5ba, type: 3}
-  m_PrefabInstance: {fileID: 7627289724917300807}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2110413412963127798 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8399250991979802545, guid: 4336e7e54383ef4429875f9cd5bbd5ba, type: 3}
   m_PrefabInstance: {fileID: 7627289724917300807}
   m_PrefabAsset: {fileID: 0}

@@ -129,8 +129,9 @@ namespace SpaceTrain.Player
 				|| myPlayerState == PlayerState.Running // OR the last input was not running.
 				|| myPlayerState == PlayerState.Walking) // OR the last input was not walking.
 			{
-				Debug.Log("InputVector" + InputVector + "|| myPlayerState" + myPlayerState.ToString() 
-				          + "|| turningTimer" + turningTimer);
+				//Debug.Log("InputVector" + InputVector + "|| myPlayerState" + myPlayerState.ToString() 
+				//          + "|| turningTimer" + turningTimer);
+				
 				// If the player was in a 'running' or 'walking' state last frame
 				// BUT the directional input is 0.
 				if(InputVector.magnitude == 0)
