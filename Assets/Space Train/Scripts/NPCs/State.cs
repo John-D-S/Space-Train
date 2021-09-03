@@ -20,9 +20,25 @@ namespace NpcAi
             }
             if(_stateMachine.PlayerIsVisible)
             {
-                if(NpcStateMachine.playerIdentity.recentlyChangedIdentities)
+                if(_stateMachine.suspicionOfPlayer > 1)
                 {
                     _stateMachine.isAlerted = true;
+                }
+                if(!_stateMachine.isAlerted)
+                {
+                    if(NpcStateMachine.playerIdentity.recentlyChangedIdentities)
+                    {
+                        _stateMachine.isAlerted = true;
+                    }
+                
+                    if(!NpcStateMachine.playerIdentity.IsAllowedInLocation)
+                    {
+                        _stateMachine.suspicionOfPlayer += Time.fixedDeltaTime / _stateMachine.TimeUntilAlert;
+                    }
+                    else
+                    {
+                        _stateMachine.suspicionOfPlayer -= Time.fixedDeltaTime / _stateMachine.TimeUntilAlert;
+                    }
                 }
             }
         } 

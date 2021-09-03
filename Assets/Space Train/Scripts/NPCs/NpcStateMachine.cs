@@ -31,14 +31,15 @@ namespace NpcAi
 		[SerializeField] private float fieldOfView;
 		[SerializeField] private float eyeHeight;
 
-		private float suspicionOfPlayer;
+		[System.NonSerialized] public float suspicionOfPlayer;
+		[SerializeField] private float timeUntilAlert;
+		public float TimeUntilAlert => timeUntilAlert;
 		public static IdentityHandler playerIdentity;
 		private bool alive = true;
 		public bool Alive => alive;
-		public bool isAlerted;
+		[System.NonSerialized] public bool isAlerted;
 		private State currentState;
 		public State CurrentState => currentState;
-		public bool canTalk;
 
 		public bool PlayerIsVisible
 		{

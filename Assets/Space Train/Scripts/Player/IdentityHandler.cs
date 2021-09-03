@@ -19,6 +19,21 @@ namespace SpaceTrain.Player
 	    // This is the UI of the current selected Identity.
 	    public CharacterIdentity selectedIdentiy;
 
+	    //Added by John
+	    public bool IsAllowedInLocation
+	    {
+		    get
+		    {
+			    if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit))
+			    {
+				    if(ZoneTag.allowedIdentitiesByFloorGO.ContainsKey(hit.collider.gameObject))
+					    if(!ZoneTag.allowedIdentitiesByFloorGO[gameObject].Contains(currentPlayerIdentity))
+						    return false;
+			    } 
+			    return true;
+		    }
+	    }
+
 
 	    [Header("Currently Changed Identity")]
 	    // Has the player recently changed identites.
