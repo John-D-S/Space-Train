@@ -136,6 +136,7 @@ namespace NpcAi
 		{
 			NpcStateMachine thisNpc = this;
 			currentState = currentState.UpdateState(ref thisNpc);
+			currentState.UpdateState(ref thisNpc);
 		}
 	}
 }

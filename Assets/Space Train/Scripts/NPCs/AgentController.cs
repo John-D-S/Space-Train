@@ -9,28 +9,34 @@ public class AgentController : MonoBehaviour
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     private NavMeshAgent agent;
-
+    private bool hasArrived = true;
+    public bool HasArrived => hasArrived;
+    
     public void StopMoving()
     { 
         agent.ResetPath();
+        hasArrived = true;
     }
     
-    public void RunToPosition(Vector3 _position)
+    public bool TryRunToPosition(Vector3 _position)
     {
         agent.speed = runSpeed;
-        agent.SetDestination(_position);
+        hasArrived = false;
+        return agent.SetDestination(_position);
     }
 
-    public void WalkToPosition(Vector3 _position)
+    public bool TryWalkToPosition(Vector3 _position)
     {
         agent.speed = walkSpeed;
-        agent.SetDestination(_position);
+        hasArrived = false;
+        return agent.SetDestination(_position);
     }
 
     public void TurnToFace(Vector3 _position)
     {
         StartCoroutine(TurnTowards(_position, -1));
     }
+    
     public void TurnToFace(Vector3 _position, float _timeToKeepTurning)
     {
         StartCoroutine(TurnTowards(_position, _timeToKeepTurning));
@@ -70,6 +76,10 @@ public class AgentController : MonoBehaviour
         if (!agent.pathPending && agent.velocity.magnitude == 0 && agent.remainingDistance <= agent.stoppingDistance)// has the agent reached it's position
         {
             StopMoving();
+        }
+        if(agent.isStopped)
+        {
+            hasArrived = true;
         }
     }
 }
