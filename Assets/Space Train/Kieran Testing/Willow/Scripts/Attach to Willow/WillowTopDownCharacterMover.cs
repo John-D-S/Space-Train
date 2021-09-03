@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Willow
 {
-
     // This is in the same folder hopefully.
     [RequireComponent(typeof(WillowInputHandler))]
     // Make sure this is linked to "Willow with animations.
@@ -17,7 +16,7 @@ namespace Willow
     // This is to actually move Willow and deal with the animations. 
     public class WillowTopDownCharacterMover : MonoBehaviour
     {
-        // This is the Input Handler that will.
+        // This is the Input Handler that will take in the input of the player.
         private WillowInputHandler myWillowInputHandler;
 
         // Turn this on if you want to move the mouse towards the player.
@@ -26,7 +25,7 @@ namespace Willow
         // The movement speed, self explanatary.
         [SerializeField] private float MovementSpeed = 1.6f;
 
-        // Run Speed, selsh explanatary.
+        // Run Speed, self explanatary.
         [SerializeField] private float RunSpeed = 6.68f;
 
         // Rotation self explainatary.
@@ -48,7 +47,7 @@ namespace Willow
         // Update is called once per frame.
         private void Update()
         {
-            // Gets the Vector 3 of the inputed vector
+            // Gets the Vector 3 of the inputed vector.
             Vector3 targetVector = new Vector3(myWillowInputHandler.InputVector.x, 0, myWillowInputHandler.InputVector.y);
             
             // Moves towards the target.
@@ -87,10 +86,10 @@ namespace Willow
             }
         }
 
-        // If Just using the keys it will implement this.
+        // If just using the keys it will implement this.
         private Vector3 MoveTowardTarget(Vector3 targetVector)
         {
-            // this is the movement speed it will run at.
+            // This is the movement speed it will run at.
             float speed = new float();
 
             // If Walking Speed = Walking.
