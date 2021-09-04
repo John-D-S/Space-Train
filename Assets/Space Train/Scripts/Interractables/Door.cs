@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using UnityEngine;
 
 public class Door : MonoBehaviour, IInterractable
@@ -61,9 +63,30 @@ public class Door : MonoBehaviour, IInterractable
             yield return new WaitForFixedUpdate();
         }
     }
+
+    bool NpcsNearby
+    {
+        get
+        {
+            List<Collider> nearbyColliders = Physics.OverlapSphere(initialDoorPos, distanceToCheckForCharacters, LayerMask.GetMask("Character")).ToList();
+            foreach(Collider nearbyCollider in nearbyColliders)
+            {
+                if(nearbyCollider.transform.gameObject.CompareTag("NPC"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
     
     void FixedUpdate()
     {
+        if(!open && NpcsNearby)
+        {
+            Interract();
+        }
+        
         //if the door's height is below its target, move it up until it isn't; visa versa for if it is above it's target.
         if (DoorYpos < TargetHeight)
         {

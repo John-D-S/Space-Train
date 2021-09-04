@@ -352,8 +352,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorPart: {fileID: 8587000610704844525}
   openOnStart: 0
+  distanceToCheckForCharacters: 1
   openedDoorHeight: -1.6
-  doorMoveSpeed: 10
+  doorMoveSpeed: 20
 --- !u!114 &3710445964368927556
 MonoBehaviour:
   m_ObjectHideFlags: 0
