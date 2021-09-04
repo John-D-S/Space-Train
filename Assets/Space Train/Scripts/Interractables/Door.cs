@@ -7,17 +7,15 @@ public class Door : MonoBehaviour, IInterractable
     [SerializeField]
     private GameObject doorPart;
     [SerializeField] private bool openOnStart;
-    
-    
+    [SerializeField, Tooltip("The door will not close when any NPCs or the character are within this radius.")] private float distanceToCheckForCharacters = 2f;
     //the localPosition.y of the door at its lowest
     private float closedDoorHeight;
     //the localPosition.y of the door at its highest
-    [SerializeField]
-    private float openedDoorHeight = 10;
-    [SerializeField]
-    private float doorMoveSpeed = 3;
+    [SerializeField] private float openedDoorHeight = 10;
+    [SerializeField] private float doorMoveSpeed = 3;
     private float DoorYpos => doorPart.transform.localPosition.y;
-
+    private Vector3 initialDoorPos;
+    
     [System.NonSerialized]
     public bool open = false;
 
@@ -38,6 +36,7 @@ public class Door : MonoBehaviour, IInterractable
     private void Start()
     {
         closedDoorHeight = DoorYpos;
+        initialDoorPos = transform.position;
         if(openOnStart)
         {
             Interract();
@@ -47,8 +46,22 @@ public class Door : MonoBehaviour, IInterractable
     public void Interract()
     {
         open = !open;
+        StartCoroutine(CloseDoorWhenClearOfCharacters());
     }
 
+    private IEnumerator CloseDoorWhenClearOfCharacters()
+    {
+        while(open)
+        {
+            bool charactersNearby = Physics.CheckSphere(initialDoorPos, distanceToCheckForCharacters, LayerMask.GetMask("Character"));
+            if(!charactersNearby)
+            {
+                open = false;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    
     void FixedUpdate()
     {
         //if the door's height is below its target, move it up until it isn't; visa versa for if it is above it's target.
