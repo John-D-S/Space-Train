@@ -8,12 +8,12 @@ using SpaceTrain.Player;
 
 namespace NpcAi
 {	
-	public abstract class NpcStateMachine : MonoBehaviour
+	public class NpcStateMachine : MonoBehaviour
 	{
-		private static List<NpcStateMachine> allNPCs;
-		private List<NpcStateMachine> nearbyNPCs;
+		private static List<NpcStateMachine> allNPCs = new List<NpcStateMachine>();
+		private List<NpcStateMachine> nearbyNPCs = new List<NpcStateMachine>();
 		public List<NpcStateMachine> NearbyNPCs => nearbyNPCs;
-		private List<NpcStateMachine> visibleNPCs;
+		private List<NpcStateMachine> visibleNPCs = new List<NpcStateMachine>();
 		public List<NpcStateMachine> VisibleNPCs => visibleNPCs;
 		
 		public Emote emote;
@@ -122,6 +122,7 @@ namespace NpcAi
 					break;
 				case CharacterIdentity.Passenger:
 					currentState = new PassengerIdle(ref thisNpc);
+					
 					break;
 				case CharacterIdentity.Worker:
 					currentState = new WorkerIdle();

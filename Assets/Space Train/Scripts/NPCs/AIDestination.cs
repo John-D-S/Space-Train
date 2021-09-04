@@ -9,13 +9,17 @@ namespace NpcAi
 {
     public class AIDestination : MonoBehaviour
     {
-        private List<CharacterIdentity> destinationIdentity;
+        [SerializeField] private List<CharacterIdentity> destinationIdentity = new List<CharacterIdentity>();
         public static Dictionary<CharacterIdentity, List<AIDestination>> aiDestinationsByAllowedCharacters = new Dictionary<CharacterIdentity, List<AIDestination>>();
 
         private void Start()
         {
             foreach(CharacterIdentity identity in destinationIdentity)
             {
+                if(!aiDestinationsByAllowedCharacters.ContainsKey(identity))
+                {
+                    aiDestinationsByAllowedCharacters.Add(identity, new List<AIDestination>());
+                }
                 aiDestinationsByAllowedCharacters[identity].Add(this);
             }
         }

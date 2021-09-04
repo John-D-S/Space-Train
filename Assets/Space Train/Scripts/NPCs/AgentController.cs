@@ -105,13 +105,16 @@ public class AgentController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!agent.pathPending && agent.velocity.magnitude == 0 && agent.remainingDistance <= agent.stoppingDistance)// has the agent reached it's position
+        if(agent.isOnNavMesh)
         {
-            StopMoving();
-        }
-        if(agent.isStopped)
-        {
-            hasArrived = true;
+            if (!agent.pathPending && agent.velocity.magnitude == 0 && agent.remainingDistance <= agent.stoppingDistance)// has the agent reached it's position
+            {
+                StopMoving();
+            }
+            if(agent.isStopped)
+            {
+                hasArrived = true;
+            }
         }
     }
 }
