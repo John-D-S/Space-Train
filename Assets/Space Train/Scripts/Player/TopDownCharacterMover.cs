@@ -42,6 +42,8 @@ namespace SpaceTrain.Player
         // The myCamera, assign to myCamera in scene.
         [SerializeField]
         private Camera Camera;
+
+        [SerializeField, Tooltip("How close you must be to interract with a thing.")] private float interractDistance = 1;
     
         // Gets the Camera and Input Handeler in Scene.
         private void Awake()
@@ -51,6 +53,18 @@ namespace SpaceTrain.Player
 
         }
 
+        private void Interract()
+        {
+            if(Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, interractDistance))
+            {
+                IInterractable interractable = hit.collider.gameObject.GetComponent<IInterractable>();
+                if(interractable != null)
+                {
+                    interractable.Interract();
+                }
+            }
+        }
+        
         // Update is called once per frame.
         private void Update()
         {
@@ -71,6 +85,11 @@ namespace SpaceTrain.Player
             {
                 // Will use a Raycast to rotate.
                 RotateFromMouseVector();
+            }
+
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                Interract();
             }
         }
 
