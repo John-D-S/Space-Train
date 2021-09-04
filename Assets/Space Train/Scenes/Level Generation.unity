@@ -9606,6 +9606,7 @@ MonoBehaviour:
   corridorRoomStyle: {fileID: 11400000, guid: 94f2119e47a5b4d45a9aa89911627c4a, type: 2}
   roomStyles:
   - {fileID: 11400000, guid: 8201634e7e7a00b48bf377779988b20b, type: 2}
+  - {fileID: 11400000, guid: f7b27334dc962ce40937bb166bf79f54, type: 2}
   - {fileID: 11400000, guid: f35c3cc3d6a2f4945adc4867f637dd12, type: 2}
   - {fileID: 11400000, guid: 39ea9f45ed6d28f46b7962ab7bbc5c99, type: 2}
   navMeshSurface: {fileID: 645628968}

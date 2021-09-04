@@ -70,10 +70,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce0ca348ed85d3459af76474d3dc864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propSize: {x: 2, y: 1}
+  propSize: {x: 2, y: 2}
   repeat: 0
   repeatDirection: 0
-  zPosWallPlacement: 0
+  zPosWallPlacement: 1
   xPosWallPlacement: 0
   zNegWallPlacement: 0
   xNegWallPlacement: 0
@@ -99,7 +99,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 83a6f192ec95e2848bba2ea8156a97e8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 83a6f192ec95e2848bba2ea8156a97e8, type: 3}
       propertyPath: m_LocalRotation.w

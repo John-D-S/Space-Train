@@ -620,8 +620,11 @@ namespace LevelGeneration
 						? _propSize.y
 						: _propSize.x;
 					Vector2Int nextTilePosition = tile.PositionInGrid + nextTileDistance * nextTileDirection;
-					LevelTile nextTile = levelTiles[nextTilePosition.x][nextTilePosition.y];
-					TryPlacePropInPos(_room, _propSpawningInfo, rot, nextTile, true);
+					if(PositionIsWithinLevel(new Vector2Int(nextTilePosition.x, nextTilePosition.y)))
+					{
+						LevelTile nextTile = levelTiles[nextTilePosition.x][nextTilePosition.y];						
+						TryPlacePropInPos(_room, _propSpawningInfo, rot, nextTile, true);
+					}
 				}
 				return true;
 			}
