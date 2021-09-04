@@ -79,6 +79,7 @@ namespace NpcAi
             
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
+				Debug.Log("walk");
 				if(_stateMachine.isAlerted)
 				{
 					return new PassengerAlert();
@@ -110,6 +111,7 @@ namespace NpcAi
             
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
+				Debug.Log("alert");
 				if(!currentDestination)
 				{
 					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
@@ -134,6 +136,7 @@ namespace NpcAi
 		{
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
+				Debug.Log("hide");
 				if(_stateMachine.PlayerIsVisible)
 				{
 					return new PassengerAlert();

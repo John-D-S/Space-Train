@@ -43,22 +43,27 @@ namespace NpcAi
 
 		public bool PlayerIsVisible
 		{
-			get => ObjectIsVisible(playerIdentity.gameObject);
+			get
+			{
+				bool playerVisible = ObjectIsVisible(playerIdentity.gameObject);
+				Debug.Log("Player is Visible" + playerVisible);
+				return playerVisible;
+			}
 		}
 		
 		public bool ObjectIsVisible(GameObject _gameObject)
 		{
 			if(_gameObject)
 			{
-				if(Vector3.Angle(transform.forward, playerIdentity.transform.position) < .5f * fieldOfView)
+				if(Vector3.Angle(transform.forward, playerIdentity.transform.position - transform.position) < .5f * fieldOfView)
 				{
 					RaycastHit hit = new RaycastHit();
-					Physics.Raycast(transform.position + Vector3.up * eyeHeight, _gameObject.transform.position, out hit);
+					Physics.Raycast(transform.position + Vector3.up * eyeHeight, playerIdentity.transform.position - transform.position, out hit);
 					if(hit.collider.gameObject == _gameObject)
 					{
 						return true;
 					}
-				}	
+				}
 			}
 			return false;
 		}
@@ -122,7 +127,6 @@ namespace NpcAi
 					break;
 				case CharacterIdentity.Passenger:
 					currentState = new PassengerIdle(ref thisNpc);
-					
 					break;
 				case CharacterIdentity.Worker:
 					currentState = new WorkerIdle();
@@ -137,7 +141,7 @@ namespace NpcAi
 		{
 			NpcStateMachine thisNpc = this;
 			currentState = currentState.UpdateState(ref thisNpc);
-			currentState.UpdateState(ref thisNpc);
+			currentState.UpdateSuspicionOfPlayer(ref thisNpc);
 		}
 	}
 }

@@ -60,6 +60,8 @@ public class AgentController : MonoBehaviour
     {
         agent.speed = walkSpeed;
         hasArrived = false;
+        if(agent.SetDestination(_position))
+            SetMovementAnimation(MovementState.Walking);
         return agent.SetDestination(_position);
     }
 
@@ -114,6 +116,10 @@ public class AgentController : MonoBehaviour
             if(agent.isStopped)
             {
                 hasArrived = true;
+            }
+            if(hasArrived)
+            {
+                SetMovementAnimation(MovementState.Idle);
             }
         }
     }

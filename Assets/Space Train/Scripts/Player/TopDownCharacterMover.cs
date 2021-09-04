@@ -42,7 +42,8 @@ namespace SpaceTrain.Player
         // The myCamera, assign to myCamera in scene.
         [SerializeField]
         private Camera Camera;
-
+        
+        // added by john
         [SerializeField, Tooltip("How close you must be to interract with a thing.")] private float interractDistance = 1;
     
         // Gets the Camera and Input Handeler in Scene.
@@ -50,7 +51,6 @@ namespace SpaceTrain.Player
         {
             _input = GetComponent<InputHandler>();
             Camera = Camera.main;
-
         }
 
         private void Interract()
@@ -138,10 +138,8 @@ namespace SpaceTrain.Player
             
             // Will get the inputed Vector and will move towards the target.
             targetVector = Quaternion.Euler(0, Camera.gameObject.transform.rotation.eulerAngles.y, 0) * targetVector;
-            // The position of the mouse to turn towards.
-            Vector3 targetPosition = transform.position + targetVector * speed;
-            // Goes to the new position.
-            transform.position = targetPosition;
+            // Go to the the position of the mouse to turn towards.
+            transform.position += targetVector * speed;
             // Will output the target vector for if not rotating with the mouse
             return targetVector;
         }

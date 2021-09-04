@@ -27,7 +27,7 @@ namespace SpaceTrain.Player
 			    if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit))
 			    {
 				    if(ZoneTag.allowedIdentitiesByFloorGO.ContainsKey(hit.collider.gameObject))
-					    if(!ZoneTag.allowedIdentitiesByFloorGO[gameObject].Contains(currentPlayerIdentity))
+					    if(!ZoneTag.allowedIdentitiesByFloorGO[hit.collider.gameObject].Contains(currentPlayerIdentity))
 						    return false;
 			    } 
 			    return true;

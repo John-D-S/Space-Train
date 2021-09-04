@@ -1843,6 +1843,11 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &314093967 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8718778816115506152, guid: 1b97d8cf1409556439b694d09cff007f, type: 3}
+  m_PrefabInstance: {fileID: 1547964489}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &315093435
 GameObject:
   m_ObjectHideFlags: 0
@@ -4051,6 +4056,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8718778816115506132, guid: 54447c24c7427024c861cc2659192371, type: 3}
+      propertyPath: m_Mass
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8967346655231938845, guid: 54447c24c7427024c861cc2659192371, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -5270,6 +5279,26 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &877466068 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1065434744092629797, guid: 1b97d8cf1409556439b694d09cff007f, type: 3}
+  m_PrefabInstance: {fileID: 1547964489}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &877466069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877466068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d415d6452dbb6cc4c8352b5b6117b671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 314093967}
+  heightAbovePlayer: 2
+  cameraRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &889253600
 GameObject:
   m_ObjectHideFlags: 0
