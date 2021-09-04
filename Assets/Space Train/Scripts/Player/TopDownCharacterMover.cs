@@ -99,13 +99,13 @@ namespace SpaceTrain.Player
             float speed = new float();
         
             // If Walking Speed = Walking.
-            if(_input.myPlayerState == PlayerState.Walking)
+            if(_input.myMovementState == MovementState.Walking)
             {
                 // Speed = the normal movement speed.
                 speed = MovementSpeed * Time.deltaTime;
             }
             // If Running Speed = Running.
-            else if(_input.myPlayerState == PlayerState.Running)
+            else if(_input.myMovementState == MovementState.Running)
             {
                 // Speed will = run speed.
                 speed = RunSpeed * Time.deltaTime;
@@ -135,13 +135,13 @@ namespace SpaceTrain.Player
             float rotatingSpeed = new float();
         
             // If rotatingSpeed = Walking.
-            if(_input.myPlayerState == PlayerState.Walking)
+            if(_input.myMovementState == MovementState.Walking)
             {
                 // Rotate normally if just a normal rotation.
                 rotatingSpeed = RotationSpeed;
             }
             // If rotatingSpeed = Running.
-            else if(_input.myPlayerState == PlayerState.Running)
+            else if(_input.myMovementState == MovementState.Running)
             {
                 // Rotate faster if running.
                 rotatingSpeed = RunRotationSpeed;

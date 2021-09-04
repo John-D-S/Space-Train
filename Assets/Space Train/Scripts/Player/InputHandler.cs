@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SpaceTrain.Player
 {
 	/// <summary> The Movement State the player is in.</summary>
-	public enum PlayerState
+	public enum MovementState
 	{
 		Idle,
 		Walking,
@@ -31,7 +31,7 @@ namespace SpaceTrain.Player
 		public Vector3 MousePosition { get; private set; }
 
 		/// <summary>The Movement State the player is in. This will change the movement speed of the player. </summary>
-		public PlayerState myPlayerState;
+		public MovementState myMovementState;
 
 		// The Player Status of the Player.
 		// This will change if the player is, Alive, or Dead.
@@ -81,7 +81,7 @@ namespace SpaceTrain.Player
 			myAnim.SetBool("Idle", true);
 			myAnim.SetBool("Walking", false);
 			myAnim.SetBool("Running", false);
-			myPlayerState = PlayerState.Idle;
+			myMovementState = MovementState.Idle;
 		}
 
 		// This is the moving walking state.
@@ -90,7 +90,7 @@ namespace SpaceTrain.Player
 			myAnim.SetBool("Idle", false);
 			myAnim.SetBool("Walking", true);
 			myAnim.SetBool("Running", false);
-			myPlayerState = PlayerState.Walking;
+			myMovementState = MovementState.Walking;
 		}
 
 		// This is the moving running state.
@@ -99,7 +99,7 @@ namespace SpaceTrain.Player
 			myAnim.SetBool("Idle", false);
 			myAnim.SetBool("Walking", false);
 			myAnim.SetBool("Running", true);
-			myPlayerState = PlayerState.Running;
+			myMovementState = MovementState.Running;
 		}
 
 	#endregion
@@ -126,8 +126,8 @@ namespace SpaceTrain.Player
 
 			// This is for the player movement.
 			if(InputVector.magnitude != 0 // If there is no movement input.
-				|| myPlayerState == PlayerState.Running // OR the last input was not running.
-				|| myPlayerState == PlayerState.Walking) // OR the last input was not walking.
+				|| myMovementState == MovementState.Running // OR the last input was not running.
+				|| myMovementState == MovementState.Walking) // OR the last input was not walking.
 			{
 				//Debug.Log("InputVector" + InputVector + "|| myPlayerState" + myPlayerState.ToString() 
 				//          + "|| turningTimer" + turningTimer);
@@ -149,7 +149,7 @@ namespace SpaceTrain.Player
 				if(Input.GetKey(KeyCode.LeftShift) && turningTimer > 0)
 				{
 					// If they are not already Running.
-					if(myPlayerState != PlayerState.Running)
+					if(myMovementState != MovementState.Running)
 					{
 						// Start Running.
 						RunningState();
@@ -159,7 +159,7 @@ namespace SpaceTrain.Player
 				else if(turningTimer > 0)
 				{
 					// If they are not already Walking.
-					if(myPlayerState != PlayerState.Walking)
+					if(myMovementState != MovementState.Walking)
 					{
 						// Start Walking.
 						WalkingState();

@@ -1,16 +1,43 @@
+using SpaceTrain.Player;
+
+
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class AgentController : MonoBehaviour
 {
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
     private NavMeshAgent agent;
+    private Animator animator;
     private bool hasArrived = true;
     public bool HasArrived => hasArrived;
+    
+    private void SetMovementAnimation(MovementState _movementState)
+    {
+        switch(_movementState)
+        {
+            case MovementState.Idle:
+                animator.SetBool("Idle", true);
+                animator.SetBool("Walking", false);
+                animator.SetBool("Running", false);
+                break;
+            case MovementState.Walking:
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walking", true);
+                animator.SetBool("Running", false);
+                break;
+            case MovementState.Running:
+                animator.SetBool("Idle", false);
+                animator.SetBool("Walking", false);
+                animator.SetBool("Running", true);
+                break;
+            case MovementState.Dead :
+                break;
+        }
+    }
     
     public void StopMoving()
     { 
@@ -22,6 +49,10 @@ public class AgentController : MonoBehaviour
     {
         agent.speed = runSpeed;
         hasArrived = false;
+        if(agent.SetDestination(_position))
+        {
+            SetMovementAnimation(MovementState.Running);
+        }
         return agent.SetDestination(_position);
     }
 
@@ -68,6 +99,7 @@ public class AgentController : MonoBehaviour
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
+        animator = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
