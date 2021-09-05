@@ -632,7 +632,7 @@ namespace LevelGeneration
 		}
 
 		private List<Vector2Int> allUsedWallPositions = new List<Vector2Int>();
-		private void OnDrawGizmos()
+		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = Color.green;
 			foreach(Vector2Int position in allUsedWallPositions)

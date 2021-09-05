@@ -15,12 +15,28 @@ namespace NpcAi
                 {
                     if(npc.isAlerted)
                     {
-                        _stateMachine.emote.ShowEmote(EmoteType.Exclaimation, 2.5f);
+                        _stateMachine.emote.ShowEmote(EmoteType.Exclaimation);
                         _stateMachine.isAlerted = true;
                     }
                 }
                 if(_stateMachine.PlayerIsVisible)
                 {
+                    _stateMachine.isAlerted = true;
+                    foreach(NpcStateMachine nearbyNpC in _stateMachine.VisibleNPCs)
+                    {
+                        if(nearbyNpC != null && nearbyNpC.isAlerted)
+                        {
+                            _stateMachine.isAlerted = true;
+                        }
+                    }
+                    if(_stateMachine.isAlerted)
+                    {
+                        _stateMachine.emote.ShowEmote(EmoteType.Exclaimation);
+                    }
+                    
+                    
+                    //the ai suspiscioin system was greatly simplified due to time
+                    /*
                     // if the NPC is fully suspicious of the player, make them alert.
                     if(_stateMachine.suspicionOfPlayer > 1)
                     {
@@ -47,24 +63,9 @@ namespace NpcAi
                     {
                         _stateMachine.emote.ShowEmote(EmoteType.Question);
                     }
+                    */
                 }
             }
         } 
-    }
-    
-    public class GuardIdle : State
-    {
-        public override State UpdateState(ref NpcStateMachine _stateMachine)
-        {
-            return this;
-        }
-    }
-    
-    public class WorkerIdle : State
-    {
-        public override State UpdateState(ref NpcStateMachine _stateMachine)
-        {
-            return this;
-        }
     }
 }

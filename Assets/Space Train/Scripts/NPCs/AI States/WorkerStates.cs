@@ -1,18 +1,16 @@
-﻿using SpaceTrain.Player;
-
+using SpaceTrain.Player;
 using System.Collections.Generic;
-
 using UnityEngine;
 
 namespace NpcAi
 {
-	public class PassengerIdle : State
+	public class WorkerIdle : State
 	{
 		private float timeSinceLastTalked = 0;
 		private float timeUntilNextTalk = 1;
 		private float timeSinceLastMoved = 0;
 		private float timeUntilNextMovement = 1;
-		public PassengerIdle(ref NpcStateMachine _stateMachine)
+		public WorkerIdle(ref NpcStateMachine _stateMachine)
 		{
 			timeUntilNextTalk = Random.Range(_stateMachine.AverageTimeBetweenTalks * 0.5f, _stateMachine.AverageTimeBetweenTalks * 0.5f + _stateMachine.AverageTimeBetweenTalks);
 			timeUntilNextMovement = Random.Range(_stateMachine.AverageTimeBetweenTalks * 0.5f, _stateMachine.AverageTimeBetweenTalks * 0.5f + _stateMachine.AverageTimeBetweenTalks); 
@@ -40,12 +38,12 @@ namespace NpcAi
 		{
 			if(_stateMachine.isAlerted)
 			{
-				return new PassengerAlert();
+				return new WorkerAlert();
 			}
 			UpdateTimes();
 			if(timeSinceLastMoved > timeUntilNextMovement)
 			{
-				return new PassengerWalk();
+				return new WorkerWalk();
 			}
 			if(timeSinceLastTalked > timeUntilNextTalk)
 			{
@@ -73,16 +71,15 @@ namespace NpcAi
 			return this;
 		}
         
-		public class PassengerWalk : State
+		public class WorkerWalk : State
 		{
 			private AIDestination currentDestination;
             
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
-				Debug.Log("walk");
 				if(_stateMachine.isAlerted)
 				{
-					return new PassengerAlert();
+					return new WorkerAlert();
 				}
 				
 				if(!currentDestination)
@@ -98,14 +95,14 @@ namespace NpcAi
 				{
 					if(_stateMachine.agentController.HasArrived)
 					{
-						return new PassengerIdle(ref _stateMachine);
+						return new WorkerIdle(ref _stateMachine);
 					}
 				}
 				return this;
 			}
 		}
 		
-		public class PassengerAlert : State
+		public class WorkerAlert : State
 		{
 			private AIDestination currentDestination;
             
@@ -125,21 +122,21 @@ namespace NpcAi
 				{
 					if(_stateMachine.agentController.HasArrived)
 					{
-						return new PassengerHide();
+						return new WorkerHide();
 					}
 				}
 				return this;
 			}
 		}
 		
-		public class PassengerHide : State
+		public class WorkerHide : State
 		{
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
 				Debug.Log("hide");
 				if(_stateMachine.PlayerIsVisible)
 				{
-					return new PassengerAlert();
+					return new WorkerAlert();
 				}
 
 				return this;

@@ -6,6 +6,8 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using SpaceTrain.Player;
 
+using System.Security.Cryptography.X509Certificates;
+
 namespace NpcAi
 {	
 	public class NpcStateMachine : MonoBehaviour
@@ -20,6 +22,7 @@ namespace NpcAi
 		public AgentController agentController;
 		[SerializeField] private float maxSuspicion;
 		[SerializeField, Tooltip("The Npc will only be aware of other npcs and the player if they are within this distance.")] private float nearbyDistance = 16;
+		public float NearbyDistance => nearbyDistance;
 		[SerializeField] private CharacterIdentity npcIdentity = CharacterIdentity.Passenger;
 		public CharacterIdentity NpcIdentity => npcIdentity;
 		[SerializeField] private float averageTimeBetweenTalks;
@@ -45,24 +48,32 @@ namespace NpcAi
 		{
 			get
 			{
-				bool playerVisible = ObjectIsVisible(playerIdentity.gameObject);
-				Debug.Log("Player is Visible" + playerVisible);
+				bool playerVisible = ObjectVisibleInFov(playerIdentity.gameObject);
 				return playerVisible;
 			}
 		}
 		
-		public bool ObjectIsVisible(GameObject _gameObject)
+		public bool ObjectVisibleInFov(GameObject _gameObject)
 		{
 			if(_gameObject)
 			{
 				if(Vector3.Angle(transform.forward, playerIdentity.transform.position - transform.position) < .5f * fieldOfView)
 				{
-					RaycastHit hit = new RaycastHit();
-					Physics.Raycast(transform.position + Vector3.up * eyeHeight, playerIdentity.transform.position - transform.position, out hit);
-					if(hit.collider.gameObject == _gameObject)
-					{
-						return true;
-					}
+					return ObjectIsVisibleFromPos(_gameObject);
+				}
+			}
+			return false;
+		}
+
+		public bool ObjectIsVisibleFromPos(GameObject _gameObject)
+		{
+			RaycastHit hit = new RaycastHit();
+			Physics.Raycast(transform.position + Vector3.up * eyeHeight,_gameObject.transform.position - transform.position, out hit);
+			if(hit.collider)
+			{
+				if(hit.collider.gameObject == _gameObject)
+				{
+					return true;
 				}
 			}
 			return false;
@@ -74,9 +85,12 @@ namespace NpcAi
 			foreach(NpcStateMachine npc in allNPCs)
 			{
 				//just using taxicab distance to find nearby npcs for performance
-				if(Mathf.Abs(transform.position.x - npc.transform.position.x) + Mathf.Abs(transform.position.z - npc.transform.position.z) < nearbyDistance)
+				if(npc)
 				{
-					currentNearbyNPCs.Add(npc);
+					if(Mathf.Abs(transform.position.x - npc.transform.position.x) + Mathf.Abs(transform.position.z - npc.transform.position.z) < nearbyDistance)
+					{
+						currentNearbyNPCs.Add(npc);
+					}
 				}
 			}
 			nearbyNPCs = currentNearbyNPCs;
@@ -87,7 +101,7 @@ namespace NpcAi
 			while(alive)
 			{
 				UpdateNearbyNpCs();
-				yield return new WaitForSeconds(Random.Range(0.5f, 1f));
+				yield return new WaitForSeconds(0.2f);
 			}
 			nearbyNPCs.Clear();
 		}
@@ -99,9 +113,12 @@ namespace NpcAi
 				List<NpcStateMachine> currentlyVisibleNpCs = new List<NpcStateMachine>();
 				foreach(NpcStateMachine npc in allNPCs)
 				{
-					if(ObjectIsVisible(npc.gameObject))
+					if(npc)
 					{
-						currentlyVisibleNpCs.Add(npc);
+						if(ObjectVisibleInFov(npc.gameObject))
+						{
+							currentlyVisibleNpCs.Add(npc);
+						}
 					}
 				}
 				visibleNPCs = currentlyVisibleNpCs;
@@ -129,10 +146,10 @@ namespace NpcAi
 					currentState = new PassengerIdle(ref thisNpc);
 					break;
 				case CharacterIdentity.Worker:
-					currentState = new WorkerIdle();
+					currentState = new WorkerIdle(ref thisNpc);
 					break;
 				case CharacterIdentity.Guard:
-					currentState = new GuardIdle();
+					currentState = new GuardIdle(ref thisNpc);
 					break;
 			}
 		}
@@ -142,6 +159,20 @@ namespace NpcAi
 			NpcStateMachine thisNpc = this;
 			currentState = currentState.UpdateState(ref thisNpc);
 			currentState.UpdateSuspicionOfPlayer(ref thisNpc);
+		}
+
+		private void OnDrawGizmosSelected()
+		{
+			Gizmos.color = new Color(0, 1, 0, 0.25f);
+			foreach(NpcStateMachine nearbyNpC in nearbyNPCs)
+			{
+				Gizmos.DrawSphere(nearbyNpC.transform.position, 0.25f);
+			}
+			Gizmos.color = new Color(1, 0, 0, 0.25f);
+			foreach(NpcStateMachine visibleNpC in visibleNPCs)
+			{
+				Gizmos.DrawSphere(visibleNpC.transform.position, 0.3f);
+			}
 		}
 	}
 }

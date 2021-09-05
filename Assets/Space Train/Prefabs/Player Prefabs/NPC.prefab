@@ -88,12 +88,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065434744092629797}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 2, z: 0.5}
-  m_LocalScale: {x: 0.04, y: 0.05, z: 0.05}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 2.6666667, z: 0.6666667}
+  m_LocalScale: {x: 0.053333335, y: 0.06666667, z: 0.06666667}
   m_Children: []
-  m_Father: {fileID: 8376197169929240051}
-  m_RootOrder: 0
+  m_Father: {fileID: 8337433461370626386}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &2799316891684618581
 MeshFilter:
@@ -162,7 +162,8 @@ MonoBehaviour:
   listenMaterial: {fileID: 2100000, guid: 130817e0c16e23846898e93730500f05, type: 2}
   whistleMaterial: {fileID: 2100000, guid: 702e624cc7610c74e84873df6f353c06, type: 2}
   emoteMeshRenderer: {fileID: 2202111755111642292}
-  position: {x: 0, y: 2, z: 0.5}
+  position: {x: 0, y: 2, z: 0.75}
+  rotation: {x: 0, y: 180, z: 0}
 --- !u!1 &1137262418341366881
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,7 +401,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1de974cce273947458faa5e0adfd019f, type: 2}
+  - {fileID: 2100000, guid: f4c3e848aede70b4ea57f75e888ab00d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1159,7 +1160,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 3475236850656480030}
   - {fileID: 8337433461370626386}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1230,8 +1230,9 @@ Transform:
   - {fileID: 1704866065114215290}
   - {fileID: 906047184173155907}
   - {fileID: 4345569278870488966}
+  - {fileID: 3475236850656480030}
   m_Father: {fileID: 8376197169929240051}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2689967686012533544
 Animator:
@@ -1281,11 +1282,11 @@ MonoBehaviour:
   emote: {fileID: 1066937836452343168}
   agentController: {fileID: 1683298630315824041}
   maxSuspicion: 100
-  nearbyDistance: 16
+  nearbyDistance: 6
   npcIdentity: 1
   averageTimeBetweenTalks: 5
   timeBetweenWalks: 20
-  fieldOfView: 90
+  fieldOfView: 120
   eyeHeight: 0
   timeUntilAlert: 20
 --- !u!195 &5295025902778181618
@@ -1302,7 +1303,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 360
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

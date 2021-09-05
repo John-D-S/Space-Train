@@ -25,9 +25,9 @@ namespace NpcAi
 		[Header("-- Emote Components --")]
 		[SerializeField] private MeshRenderer emoteMeshRenderer;
 
-		[Header("-- Emote Positioning --")] [SerializeField]
-		private Vector3 position;
-		private Vector3 rotation;
+		[Header("-- Emote Positioning --")] 
+		[SerializeField] private Vector3 position;
+		[SerializeField] private Vector3 rotation;
 
 		private Material EmoteTypeToMat(EmoteType _emoteType)
 		{
@@ -40,7 +40,7 @@ namespace NpcAi
 				case EmoteType.Talk:
 					return talkMaterial;
 				case EmoteType.Listen:
-					return whistleMaterial;
+					return listenMaterial;
 				case EmoteType.Whistle:
 					return whistleMaterial;
 			}
@@ -55,6 +55,7 @@ namespace NpcAi
 		
 		public void ShowEmote(EmoteType _emoteType, float _secondsDisplayed)
 		{
+			Debug.Log("triedToShowEmote");
 			StopAllCoroutines();
 			StartCoroutine(ShowEmoteForTime(_emoteType, _secondsDisplayed));
 		}
