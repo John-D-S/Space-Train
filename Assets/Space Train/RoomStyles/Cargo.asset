@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Cargo
   m_EditorClassIdentifier: 
   props:
-  - prop: {fileID: 0}
-    maxNumberInRoom: 0
+  - prop: {fileID: 1033031883006349874, guid: 2a3ea85dd3c8cdc498dcfbe6ba440b48, type: 3}
+    maxNumberInRoom: 3
+  - prop: {fileID: 4877409566414999258, guid: 6a9fca19c13f68244a5e51f08c731424, type: 3}
+    maxNumberInRoom: 3
+  - prop: {fileID: 2041580162588043099, guid: c61c8d9aa726e7945a37de75858fb609, type: 3}
+    maxNumberInRoom: 3
+  - prop: {fileID: 3348752602811093906, guid: 3b56f41f302eb37429ee81b95f870767, type: 3}
+    maxNumberInRoom: 3
   floor: {fileID: 4972177422767711341, guid: 733242c694975b048ac5cc6fe864ff8b, type: 3}
   wall: {fileID: 6065121446419011961, guid: 7bae452ee4bf9e34b8e289f2e5272672, type: 3}
   door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}

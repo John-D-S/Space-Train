@@ -1214,7 +1214,7 @@ MonoBehaviour:
   RotateTowardMouse: 0
   MovementSpeed: 3
   RunSpeed: 6
-  RotationSpeed: 5
+  RotationSpeed: 20
   RunRotationSpeed: 10
   Camera: {fileID: 0}
   interractDistance: 1

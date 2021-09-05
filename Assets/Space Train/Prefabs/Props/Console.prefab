@@ -54,7 +54,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4304830659679160217}
   - component: {fileID: 4304830659679160218}
-  - component: {fileID: 8768791898689868252}
   m_Layer: 0
   m_Name: Console
   m_TagString: Untagged
@@ -89,27 +88,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce0ca348ed85d3459af76474d3dc864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propSize: {x: 2, y: 1}
+  propSize: {x: 2, y: 2}
   repeat: 0
   repeatDirection: 0
-  zPosWallPlacement: 0
+  zPosWallPlacement: 1
   xPosWallPlacement: 0
   zNegWallPlacement: 0
   xNegWallPlacement: 0
   tileSize: 2
---- !u!65 &8768791898689868252
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4304830659679160219}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7862911433162555656
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7fca343e73581014d880ec82391f45b1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 3.125
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7fca343e73581014d880ec82391f45b1, type: 3}
       propertyPath: m_LocalRotation.w

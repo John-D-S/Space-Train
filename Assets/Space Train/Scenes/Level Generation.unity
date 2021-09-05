@@ -9599,7 +9599,7 @@ MonoBehaviour:
   levelLength: 32
   levelWidth: 16
   minDistanceBetweenCorridors: 3
-  minDistanceBetweenCorridorAndLevelEdge: 3
+  minDistanceBetweenCorridorAndLevelEdge: 4
   maxCorridorLength: 32
   minDistanceBetweenDoors: 6
   targetNumberOfCorridors: 20

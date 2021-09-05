@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61eee2c4b1cd8724898254eb0e6a24b5, type: 3}
   m_Name: Systems
   m_EditorClassIdentifier: 
-  roomTag: 
-  LinkableRoomTags: []
-  props: []
+  props:
+  - prop: {fileID: 4304830659679160218, guid: 288f113e784688145992bd784b2a85c3, type: 3}
+    maxNumberInRoom: 1
+  - prop: {fileID: 805415209286442805, guid: ecfbe7a0d4511ca49b4eab524a9b1927, type: 3}
+    maxNumberInRoom: 15
   floor: {fileID: 4972177422767711341, guid: 171cb2f367882cc41bcff99e22134be0, type: 3}
   wall: {fileID: 6065121446419011961, guid: 3ef5885fccd36814e941a43f5dd4b290, type: 3}
   door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}
