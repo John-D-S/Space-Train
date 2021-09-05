@@ -52,7 +52,7 @@ namespace NpcAi
 				foreach(NpcStateMachine npc in _stateMachine.VisibleNPCs)
 				{
 					//passengers only talk to other passengers.
-					if(npc.NpcIdentity == CharacterIdentity.Passenger)
+					if(npc.NpcIdentity == CharacterIdentity.Worker)
 					{
 						float distanceToNpc = Vector3.Distance(npc.transform.position, _stateMachine.transform.position);
 						if(distanceToNpc < closestNpcDistance)
@@ -108,7 +108,6 @@ namespace NpcAi
             
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
-				Debug.Log("alert");
 				if(!currentDestination)
 				{
 					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
@@ -133,12 +132,10 @@ namespace NpcAi
 		{
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
-				Debug.Log("hide");
 				if(_stateMachine.PlayerIsVisible)
 				{
 					return new WorkerAlert();
 				}
-
 				return this;
 			}
 		}

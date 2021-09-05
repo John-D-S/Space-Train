@@ -1281,14 +1281,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   emote: {fileID: 1066937836452343168}
   agentController: {fileID: 1683298630315824041}
-  maxSuspicion: 100
-  nearbyDistance: 6
+  nearbyDistance: 8
   npcIdentity: 1
   averageTimeBetweenTalks: 5
   timeBetweenWalks: 20
   fieldOfView: 120
   eyeHeight: 0
-  timeUntilAlert: 20
+  timeUntilAlert: 1
 --- !u!195 &5295025902778181618
 NavMeshAgent:
   m_ObjectHideFlags: 0

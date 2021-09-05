@@ -136,7 +136,6 @@ namespace NpcAi
 				{
 					return new PassengerAlert();
 				}
-
 				return this;
 			}
 		}

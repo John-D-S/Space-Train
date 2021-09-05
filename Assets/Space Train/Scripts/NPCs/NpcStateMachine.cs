@@ -20,7 +20,6 @@ namespace NpcAi
 		
 		public Emote emote;
 		public AgentController agentController;
-		[SerializeField] private float maxSuspicion;
 		[SerializeField, Tooltip("The Npc will only be aware of other npcs and the player if they are within this distance.")] private float nearbyDistance = 16;
 		public float NearbyDistance => nearbyDistance;
 		[SerializeField] private CharacterIdentity npcIdentity = CharacterIdentity.Passenger;
@@ -67,13 +66,16 @@ namespace NpcAi
 
 		public bool ObjectIsVisibleFromPos(GameObject _gameObject)
 		{
-			RaycastHit hit = new RaycastHit();
-			Physics.Raycast(transform.position + Vector3.up * eyeHeight,_gameObject.transform.position - transform.position, out hit);
-			if(hit.collider)
+			if(Vector3.Distance(transform.position, _gameObject.transform.position) < nearbyDistance)
 			{
-				if(hit.collider.gameObject == _gameObject)
+				RaycastHit hit = new RaycastHit();
+				Physics.Raycast(transform.position + Vector3.up * eyeHeight,_gameObject.transform.position - transform.position, out hit);
+				if(hit.collider)
 				{
-					return true;
+					if(hit.collider.gameObject == _gameObject)
+					{
+						return true;
+					}
 				}
 			}
 			return false;

@@ -21,18 +21,32 @@ namespace NpcAi
                 }
                 if(_stateMachine.PlayerIsVisible)
                 {
-                    _stateMachine.isAlerted = true;
-                    foreach(NpcStateMachine nearbyNpC in _stateMachine.VisibleNPCs)
+                    _stateMachine.suspicionOfPlayer = Mathf.Clamp01(_stateMachine.suspicionOfPlayer + Time.fixedDeltaTime / _stateMachine.TimeUntilAlert);
+                    if(_stateMachine.suspicionOfPlayer >= 1)
                     {
-                        if(nearbyNpC != null && nearbyNpC.isAlerted)
+                        _stateMachine.isAlerted = true;
+                        foreach(NpcStateMachine nearbyNpC in _stateMachine.VisibleNPCs)
                         {
-                            _stateMachine.isAlerted = true;
+                            if(nearbyNpC != null && nearbyNpC.isAlerted)
+                            {
+                                _stateMachine.isAlerted = true;
+                            }
                         }
+                        if(_stateMachine.isAlerted)
+                        {
+                            _stateMachine.emote.ShowEmote(EmoteType.Exclaimation);
+                        }
+                        return;
                     }
-                    if(_stateMachine.isAlerted)
-                    {
-                        _stateMachine.emote.ShowEmote(EmoteType.Exclaimation);
-                    }
+                }
+                else
+                {
+                    _stateMachine.suspicionOfPlayer = Mathf.Clamp01(_stateMachine.suspicionOfPlayer - Time.fixedDeltaTime / _stateMachine.TimeUntilAlert);
+                }
+                if(_stateMachine.suspicionOfPlayer > 0)
+                {
+                    _stateMachine.emote.ShowEmote(EmoteType.Question, 0.1f);
+                }
                     
                     
                     //the ai suspiscioin system was greatly simplified due to time
@@ -64,7 +78,6 @@ namespace NpcAi
                         _stateMachine.emote.ShowEmote(EmoteType.Question);
                     }
                     */
-                }
             }
         } 
     }
