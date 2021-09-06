@@ -91,10 +91,6 @@ public class Door : MonoBehaviour, IInterractable
     
     void FixedUpdate()
     {
-        if(requiresKeysToOpen)
-        {
-            Debug.Log($"keys Collected: {Key.numberOfKeysCollected}, keys Required: {Key.requiredNumberOfKeys}");
-        }
         
         if(npcsCanOpen)
         {

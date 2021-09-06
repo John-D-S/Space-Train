@@ -64,7 +64,7 @@ MonoBehaviour:
   requiresKeysToOpen: 0
   doorPart: {fileID: 1348615723450171544}
   openOnStart: 0
-  distanceToCheckForCharacters: 1
+  distanceToCheckForCharacters: 2
   openedDoorHeight: -1.6
   doorMoveSpeed: 20
 --- !u!114 &2021923337210957177
