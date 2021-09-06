@@ -162,7 +162,7 @@ MonoBehaviour:
   listenMaterial: {fileID: 2100000, guid: 130817e0c16e23846898e93730500f05, type: 2}
   whistleMaterial: {fileID: 2100000, guid: 702e624cc7610c74e84873df6f353c06, type: 2}
   emoteMeshRenderer: {fileID: 2202111755111642292}
-  position: {x: 0, y: 2, z: 0.75}
+  position: {x: 0, y: 2, z: 0.25}
   rotation: {x: 0, y: 180, z: 0}
 --- !u!1 &1137262418341366881
 GameObject:

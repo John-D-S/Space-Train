@@ -69,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8376197169929240052, guid: 1b97d8cf1409556439b694d09cff007f, type: 3}
       propertyPath: m_Name
-      value: NPC (8)
+      value: Guard
       objectReference: {fileID: 0}
     - target: {fileID: 8376197169929240052, guid: 1b97d8cf1409556439b694d09cff007f, type: 3}
       propertyPath: m_IsActive

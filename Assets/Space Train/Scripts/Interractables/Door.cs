@@ -6,8 +6,9 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInterractable
 {
-    [SerializeField]
-    private GameObject doorPart;
+    [SerializeField] private bool npcsCanOpen = true;
+    [SerializeField] private bool requiresKeysToOpen;
+    [SerializeField] private GameObject doorPart;
     [SerializeField] private bool openOnStart;
     [SerializeField, Tooltip("The door will not close when any NPCs or the character are within this radius.")] private float distanceToCheckForCharacters = 2f;
     //the localPosition.y of the door at its lowest
@@ -18,18 +19,25 @@ public class Door : MonoBehaviour, IInterractable
     private float DoorYpos => doorPart.transform.localPosition.y;
     private Vector3 initialDoorPos;
     
-    [System.NonSerialized]
-    public bool open = false;
+    [System.NonSerialized] public bool open;
 
     //gets the target height of the door based on whether or not the bool open is true
     private float TargetHeight
     {
         get
         {
-            if (open)
-                return openedDoorHeight;
-            else
+            if(requiresKeysToOpen)
+            {
+                if(Key.numberOfKeysCollected == Key.requiredNumberOfKeys)
+                {
+                    if (open)
+                        return openedDoorHeight;
+                }
                 return closedDoorHeight;
+            } 
+            if (open)
+               return openedDoorHeight; 
+            return closedDoorHeight;
         }
     }
 
@@ -82,9 +90,12 @@ public class Door : MonoBehaviour, IInterractable
     
     void FixedUpdate()
     {
-        if(!open && NpcsNearby)
+        if(npcsCanOpen)
         {
-            Interract();
+            if(!open && NpcsNearby)
+            {
+                Interract();
+            }
         }
         
         //if the door's height is below its target, move it up until it isn't; visa versa for if it is above it's target.

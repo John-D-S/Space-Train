@@ -38,6 +38,8 @@ namespace LevelGeneration
 			tileType = _tileType;
 			PositionInGrid = _positionInGrid;
 		}
+
+		public Dictionary<int, bool> entrancePositions = new Dictionary<int, bool>();
 		
 		public enum TileEdge
 		{
@@ -165,7 +167,10 @@ namespace LevelGeneration
 						}
 						break;
 					case TileEdge.Wall:
-						_instantiatedGameObjects.Add(Object.Instantiate(usedRoomstyle.Wall, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+						if(!entrancePositions.ContainsKey(i))
+						{
+							_instantiatedGameObjects.Add(Object.Instantiate(usedRoomstyle.Wall, positionToInstantiate, Quaternion.AngleAxis(i * 90, Vector3.up)));
+						}
 						break;
 					case TileEdge.Empty:
 						break;

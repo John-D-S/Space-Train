@@ -230,10 +230,12 @@ namespace LevelGeneration
 			}
 			foreach(Vector2Int position in rearEntrancePostions)
 			{
+				levelTiles[position.x][position.y].entrancePositions[2] = true;
 				GenerateCorridor(position, Axis.X);
 			}
 			foreach(Vector2Int position in frontEntrancePostions)
 			{
+				levelTiles[position.x][position.y].entrancePositions[0] = true;
 				GenerateCorridor(position, Axis.X);
 			}
 		}
@@ -329,7 +331,6 @@ namespace LevelGeneration
 			Vector2Int perpandicularAxisPosDirection = _axis == Axis.X
 				? Vector2Int.up
 				: Vector2Int.right;
-			// 
 			for(int x = 0; x < levelWidth; x++)
 			{
 				for(int z = 0; z < levelLength; z++)
