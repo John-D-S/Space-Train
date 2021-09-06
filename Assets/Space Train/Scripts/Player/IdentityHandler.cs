@@ -84,11 +84,13 @@ namespace SpaceTrain.Player
 
 	    private void Update()
 	    {
+		    /* commented out by john since disguises are no longer a thing.
 		    // If press space select that identity.
 		    if(Input.GetKey(KeyCode.Space))
 		    {
 			    ChangeIdentity(selectedIdentiy);
 		    }
+		    */
 
 		    // Basically if they have just changed identities it resets the timer and makes
 		    // RecentlyChangedIdentities = true.
