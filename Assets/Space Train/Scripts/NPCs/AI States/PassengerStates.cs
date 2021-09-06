@@ -112,7 +112,7 @@ namespace NpcAi
 				{
 					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
 					AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
-					if(_stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
+					if(attemptedDestination && _stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
 					{
 						currentDestination = attemptedDestination;
 					}

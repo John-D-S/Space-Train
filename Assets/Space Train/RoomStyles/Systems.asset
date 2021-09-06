@@ -17,6 +17,8 @@ MonoBehaviour:
     maxNumberInRoom: 1
   - prop: {fileID: 805415209286442805, guid: ecfbe7a0d4511ca49b4eab524a9b1927, type: 3}
     maxNumberInRoom: 15
+  - prop: {fileID: 1408226216781948966, guid: ce06ff05b8d40364f82b515ad264e6d8, type: 3}
+    maxNumberInRoom: 1
   floor: {fileID: 4972177422767711341, guid: 171cb2f367882cc41bcff99e22134be0, type: 3}
   wall: {fileID: 6065121446419011961, guid: 3ef5885fccd36814e941a43f5dd4b290, type: 3}
   door: {fileID: 3888445518879664742, guid: 4694b8ca64c40234db1b9d502151ab32, type: 3}

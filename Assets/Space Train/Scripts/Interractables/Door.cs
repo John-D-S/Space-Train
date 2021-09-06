@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +91,11 @@ public class Door : MonoBehaviour, IInterractable
     
     void FixedUpdate()
     {
+        if(requiresKeysToOpen)
+        {
+            Debug.Log($"keys Collected: {Key.numberOfKeysCollected}, keys Required: {Key.requiredNumberOfKeys}");
+        }
+        
         if(npcsCanOpen)
         {
             if(!open && NpcsNearby)

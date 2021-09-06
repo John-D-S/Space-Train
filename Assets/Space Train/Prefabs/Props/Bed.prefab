@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce0ca348ed85d3459af76474d3dc864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propSize: {x: 2, y: 1}
+  propSize: {x: 1, y: 1}
   repeat: 0
   repeatDirection: 0
   zPosWallPlacement: 0

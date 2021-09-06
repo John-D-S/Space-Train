@@ -39,7 +39,7 @@ namespace NpcAi
 			
 			public override State UpdateState(ref NpcStateMachine _stateMachine)
 			{
-				if(_stateMachine.isAlerted || _stateMachine.PlayerIsVisible)
+				if(_stateMachine.isAlerted)
 				{
 					return new GuardAlert();
 				}
@@ -88,12 +88,6 @@ namespace NpcAi
 					_stateMachine.agentController.TryWalkToPosition(playerPosition);
 				}
 				return this;
-				if(_stateMachine.PlayerIsVisible)
-				{
-					_stateMachine.agentController.TryRunToPosition(NpcStateMachine.playerIdentity.transform.position);
-				}
-				_stateMachine.emote.ShowEmote(EmoteType.Question);
-				return new GuardPatrol();
 			}
 		}
 	}

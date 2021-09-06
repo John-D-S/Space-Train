@@ -55,7 +55,6 @@ namespace NpcAi
 		
 		public void ShowEmote(EmoteType _emoteType, float _secondsDisplayed)
 		{
-			Debug.Log("triedToShowEmote");
 			StopAllCoroutines();
 			StartCoroutine(ShowEmoteForTime(_emoteType, _secondsDisplayed));
 		}
