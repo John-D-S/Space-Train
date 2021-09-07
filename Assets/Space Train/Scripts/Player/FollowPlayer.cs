@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class FollowPlayer : MonoBehaviour
 {
-	[SerializeField] private GameObject player;
-	[SerializeField] private float heightAbovePlayer;
-	[SerializeField] private Vector3 cameraRotation;
+	[SerializeField, Tooltip("The player GameObject.")] private GameObject player;
+	[SerializeField, Tooltip("The height above the player to set this gameObject's position.")] private float heightAbovePlayer;
+	[SerializeField, Tooltip("The rotation to keep.")] private Vector3 cameraRotation;
 
 	private void Update()
 	{

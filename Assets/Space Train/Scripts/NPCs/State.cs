@@ -4,9 +4,18 @@ using UnityEngine;
 
 namespace NpcAi
 {
+    /// <summary>
+    /// The class that defines a behavior that is used by NpcStateMachine
+    /// </summary>
     public abstract class State
     {
+        /// <summary>
+        /// performs a behavior on _stateMachine and returns the next state
+        /// </summary>
         public abstract State UpdateState(ref NpcStateMachine _stateMachine);
+        /// <summary>
+        /// updats the suspicion of _stateMachine
+        /// </summary>
         public void UpdateSuspicionOfPlayer(ref NpcStateMachine _stateMachine)
         {
             if(!_stateMachine.isAlerted)

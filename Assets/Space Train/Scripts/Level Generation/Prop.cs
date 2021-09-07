@@ -33,6 +33,9 @@ public class Prop : MonoBehaviour
     [SerializeField, Tooltip("This does not affect generation or prop placement, just how the border gizmo appears in game.")] 
     private float tileSize = 2; 
     
+    //this will draw a square around the prop to show its size when it it is being tweaked in the inspector.
+    //the sides marked with green show in which direction the prop will try to repeat
+    //and the sides marked with red show which sides will be placed adjacent to a tile with a wall.
     private void OnDrawGizmosSelected()
     {
         float yPropSize = propSize.y * tileSize;
@@ -77,6 +80,9 @@ public class Prop : MonoBehaviour
     }
 }
 
+/// <summary>
+/// used so that a list of information about prop spawning can be conveniantley made in roomstyle scriptable objects
+/// </summary>
 [System.Serializable]
 public class PropSpawningInfo
 {

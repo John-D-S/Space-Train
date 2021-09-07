@@ -9,8 +9,15 @@ namespace NpcAi
 {
     public class AIDestination : MonoBehaviour
     {
-        [SerializeField] private List<CharacterIdentity> destinationIdentity = new List<CharacterIdentity>();
+        [SerializeField, Tooltip("The list of types of NPCs that can use this AIDestination")] private List<CharacterIdentity> destinationIdentity = new List<CharacterIdentity>();
+        //the dictionary that contains all the ai destinations, sorted by the characters that can visit them.
         public static Dictionary<CharacterIdentity, List<AIDestination>> aiDestinationsByAllowedCharacters = new Dictionary<CharacterIdentity, List<AIDestination>>();
+
+        private void Awake()
+        {
+            //wipe this every time the level is loaded anew
+            aiDestinationsByAllowedCharacters.Clear();
+        }
 
         private void Start()
         {

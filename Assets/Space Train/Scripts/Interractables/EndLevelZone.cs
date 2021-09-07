@@ -6,10 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class EndLevelZone : MonoBehaviour
 {
-	[SerializeField] private int menuSceneNumber;
-	[SerializeField] private GameObject endGameScreen;
+	[SerializeField, Tooltip("The Build index of the menu scene")] private int menuSceneNumber;
+	[SerializeField, Tooltip("The UI element Screen that pops up when the game finishes")] private GameObject endGameScreen;
 	private bool gameHasEnded = false;
 	
+	// When the player walks into the trigger, show the screen that says the game has ended, then end it by going back to the main menu after 5 seconds.
 	private void OnTriggerEnter(Collider other)
 	{
 		if(other.CompareTag("Player"))

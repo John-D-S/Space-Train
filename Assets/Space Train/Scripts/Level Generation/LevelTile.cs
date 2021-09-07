@@ -14,12 +14,15 @@ namespace LevelGeneration
 	}
 	
 	/// <summary>
-	/// The class which 
+	/// The class which contians information and funtionality relating to the game objects that will spawn in a specific position in the level as part of a tile.
 	/// </summary>
 	public class LevelTile
 	{
+		//the type of this level tile
 		public TileType tileType;
+		//the room this tile belongs to
 		public Room room;
+		//the roomID of the room that this tile belongs to
 		public int RoomID
 		{
 			get
@@ -34,19 +37,28 @@ namespace LevelGeneration
 				}
 			}
 		}
+		//this tile's position in the grid
 		public Vector2Int PositionInGrid { get; private set; }
+		//what crazy thing will spawn on the edge of this tile?
 		public TileEdge[] tileEdges = new TileEdge[4];
 
+		//the roomstyle of the room that this tile belongs to
 		public RoomStyle RoomStyle => room.roomStyle;
-
+		
 		public LevelTile(TileType _tileType, Vector2Int _positionInGrid)
 		{
 			tileType = _tileType;
 			PositionInGrid = _positionInGrid;
 		}
 
+		/// <summary>
+		/// used for negating the placement of walls
+		/// </summary>
 		public Dictionary<int, bool> entrancePositions = new Dictionary<int, bool>();
 		
+		/// <summary>
+		/// the types of crazy things that can be placed on the edge of a tile.
+		/// </summary>
 		public enum TileEdge
 		{
 			Empty,
@@ -76,7 +88,10 @@ namespace LevelGeneration
 				occupiedByProp = value;
 			}
 		}
-
+		
+		/// <summary>
+		/// returns true if this prop has a wall.
+		/// </summary>
 		public bool HasWall
 		{
 			get
@@ -94,6 +109,9 @@ namespace LevelGeneration
 		}
 		
 		public bool doorAlreadyInstantiated = false;
+		/// <summary>
+		/// returns the roomID on the other side of the door (if there is one)
+		/// </summary>
 		public int RoomIDOnOtherSideOfDoor()
 		{
 			for(int i = 0; i < 0; i++)
@@ -107,6 +125,9 @@ namespace LevelGeneration
 			return RoomID;
 		}
 		
+		/// <summary>
+		/// returns the position of the tile one unit in the given direction
+		/// </summary>
 		public Vector2Int PosInOneUnitInDirection(Direction _direction)
 		{
 			switch(_direction)
@@ -123,6 +144,9 @@ namespace LevelGeneration
 			return PositionInGrid;
 		}
 		
+		/// <summary>
+		/// will try to set a door on the tile edge of this tile in the given direction.
+		/// </summary>
 		public bool TrySetDoor(Direction _direction)
 		{
 			if(tileEdges[(int) _direction] == TileEdge.Wall)

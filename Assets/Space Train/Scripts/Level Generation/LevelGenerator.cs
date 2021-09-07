@@ -96,6 +96,10 @@ namespace LevelGeneration
 			}
 		}
 		
+		/// <summary>
+		/// gets all the tiles connected to the tile at the given position which share the same tyleType and roomID
+		/// It does this like flood filling
+		/// </summary>
 		private List<Vector2Int> ConnectedLevelTilePositions(Vector2Int _position)
 		{
 			TileType targetTileType = levelTiles[_position.x][_position.y].tileType;
@@ -500,6 +504,10 @@ namespace LevelGeneration
 			return _pos;
 		}
 		
+		/// <summary>
+		/// try to place a prop in a given room.
+		/// </summary>
+		/// <returns>returns true if the placement was successful</returns>
 		private bool TryPlaceProp(ref Room _room, PropSpawningInfo _propSpawningInfo)
 		{
 			List<LevelTile> roomTiles = _room.OccupiedTiles.ToArray().ToList();
@@ -522,6 +530,10 @@ namespace LevelGeneration
 			return false;
 		}
 
+		/// <summary>
+		/// try to place a prop in a given position.
+		/// </summary>
+		/// <returns>returns true if the placement was successful</returns>
 		private bool TryPlacePropInPos(Room _room, PropSpawningInfo _propSpawningInfo, int rot, LevelTile tile, bool _ignoreWallPlacement)
 		{
 			int roomID = _room.RoomID;
@@ -748,6 +760,9 @@ namespace LevelGeneration
 			navMeshSurface.BuildNavMesh();
 		}
 		
+		/// <summary>
+		/// sequentially do all the things that generates the level
+		/// </summary>
 		public void GenerateLevel()
 		{
 			InitializeLevel();
@@ -762,6 +777,7 @@ namespace LevelGeneration
 		
 		private void Start()
 		{
+			// Its just that easy!
 			GenerateLevel();
 		}	
 	}

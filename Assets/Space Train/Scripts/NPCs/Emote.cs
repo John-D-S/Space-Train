@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace NpcAi
 {
+	/// <summary>
+	/// the types of emotes that can be shown
+	/// </summary>
 	public enum EmoteType
 	{
 		Exclaimation,
@@ -13,6 +16,7 @@ namespace NpcAi
 		Listen,
 		Whistle
 	}
+	
 	public class Emote : MonoBehaviour
 	{
 		[Header("-- Emote Materials --")] 
@@ -47,18 +51,27 @@ namespace NpcAi
 			return null;
 		}
 		
+		/// <summary>
+		/// shows the emote of the given type indefinitely until a new one is shown, or hideemote is called
+		/// </summary>
 		public void ShowEmote(EmoteType _emoteType)
 		{
 			emoteMeshRenderer.enabled = true;
 			emoteMeshRenderer.material = EmoteTypeToMat(_emoteType);
 		}
 		
+		/// <summary>
+		/// shows the given emote for the given amount of time
+		/// </summary>
 		public void ShowEmote(EmoteType _emoteType, float _secondsDisplayed)
 		{
 			StopAllCoroutines();
 			StartCoroutine(ShowEmoteForTime(_emoteType, _secondsDisplayed));
 		}
 		
+		/// <summary>
+		/// hides the shown emote
+		/// </summary>
 		public void HideEmote()
 		{
 			emoteMeshRenderer.enabled = false;
