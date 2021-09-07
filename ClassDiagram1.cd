@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LevelGeneration.LevelGenerator">
+    <Position X="4" Y="2" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAQEABICSsohFGAgAYAAAAYAACgCADJABAQABCACAI=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\LevelGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LevelGeneration.LevelTile">
+    <Position X="11.75" Y="2" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="LevelGeneration.LevelTile.TileEdge" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Space Train\Scripts\Level Generation\LevelTile.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAAAAQCEAAADAAAAIAAAECQAABAAgCIAAAIAAAEAAA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\LevelTile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LevelGeneration.Room">
+    <Position X="9.25" Y="7" Width="2" />
+    <NestedTypes>
+      <Class Name="LevelGeneration.Room.InstantiationInfo" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Space Train\Scripts\Level Generation\Room.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAFAAAACAAAAAAAAAAAAAEABAAIAAAAA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\Room.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LevelGeneration.RoomStyle">
+    <Position X="1.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAgAAgAAAAIAAAAAACAAAQAgAAEAAAAAAA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\RoomStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EndLevelZone">
+    <Position X="7.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAACAAAAAAAAAAAAAAAAAAAAAAQAAAAAAYEAA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Interractables\EndLevelZone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.MonoBehaviour" Collapsed="true">
+    <Position X="7.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Object" Collapsed="true">
+    <Position X="12" Y="8.25" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="UnityEngine.ScriptableObject" Collapsed="true">
+    <Position X="1.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Enum Name="LevelGeneration.Axis">
+    <Position X="1.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAE=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\LevelGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LevelGeneration.Direction">
+    <Position X="1.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAACAAAAAAAACAgAA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\LevelGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LevelGeneration.TileType">
+    <Position X="1.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Space Train\Scripts\Level Generation\LevelTile.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
