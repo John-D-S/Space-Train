@@ -32,25 +32,25 @@ namespace LevelGeneration
 
 	public class LevelGenerator : MonoBehaviour
 	{
-		[SerializeField] private float tileSize = 2f;
+		[SerializeField, Tooltip("How far apart each tile is spaced")] private float tileSize = 2f;
 		public float TileSize => tileSize;
-		[SerializeField] private int levelLength = 32;
-		[SerializeField] private int levelWidth = 8;
+		[SerializeField, Tooltip("How many tiles are generated in the positive z direction")] private int levelLength = 32;
+		[SerializeField, Tooltip("How many tiles are generated in the positive x direction")] private int levelWidth = 8;
 		
-		[SerializeField] private int minDistanceBetweenCorridors = 2;
-		[SerializeField] private int minDistanceBetweenCorridorAndLevelEdge = 2;
-		[SerializeField] private int maxCorridorLength = 6;
-		[SerializeField] private int minDistanceBetweenDoors = 6;
+		[SerializeField, Tooltip("The minimum distance between corridors. This in part determines the size of the rooms.")] private int minDistanceBetweenCorridors = 2;
+		[SerializeField, Tooltip("The minimum distance between corridors and the edge of the level. This helps to determine the size of the rooms which are adjacent to the edge.")] private int minDistanceBetweenCorridorAndLevelEdge = 2;
+		[SerializeField, Tooltip("The Maximum length of corridors.")] private int maxCorridorLength = 6;
+		[SerializeField, Tooltip("How close can doors of the same room be together.")] private int minDistanceBetweenDoors = 6;
 
-		[SerializeField] private int targetNumberOfCorridors = 8;
+		[SerializeField, Tooltip("How many corridors to try to create.")] private int targetNumberOfCorridors = 8;
 
-		[SerializeField] private RoomStyle corridorRoomStyle;
-		[SerializeField] private List<RoomStyle> roomStyles;
+		[SerializeField, Tooltip("What room style should corridors have?")] private RoomStyle corridorRoomStyle;
+		[SerializeField, Tooltip("What room styles should be included in the generation of rooms.")] private List<RoomStyle> roomStyles;
 		[System.NonSerialized] public List<List<LevelTile>> levelTiles = new List<List<LevelTile>>();
 		
 		[System.NonSerialized] public List<Room> rooms = new List<Room>();
 
-		[SerializeField] private NavMeshSurface navMeshSurface;
+		[SerializeField, Tooltip("The Navmesh Surface that will need to update when the level has generated.")] private NavMeshSurface navMeshSurface;
 		
 		private List<GameObject> instantiatedLevelObjects = new List<GameObject>();
 
@@ -126,11 +126,16 @@ namespace LevelGeneration
 			return connectedLevelTilePositions;
 		}
 
+		/// <summary>
+		/// set the room of each tile in levelTiles.
+		/// </summary>
 		private void SetRooms()
 		{
 			//clear any already set rooms
 			rooms.Clear();
 			int currentRoomID = 2;
+			// shuffle the room styles so that the order of the rooms are randomized without the frequency of them being randomized,
+			// i.e. there should be the same number of each room style in the level but shuffled.
 			List<RoomStyle> shuffledRoomStyles = roomStyles.OrderBy( x => Random.value ).ToList( ); 
 			int i = 0;
 			for(int x = 0; x < levelWidth; x++)

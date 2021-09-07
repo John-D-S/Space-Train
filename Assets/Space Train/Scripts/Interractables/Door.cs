@@ -7,22 +7,24 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInterractable
 {
-    [SerializeField] private bool npcsCanOpen = true;
-    [SerializeField] private bool requiresKeysToOpen;
-    [SerializeField] private GameObject doorPart;
-    [SerializeField] private bool openOnStart;
+    [SerializeField, Tooltip("Whether or not the door will open when NPCs are nearby,")] private bool npcsCanOpen = true;
+    [SerializeField, Tooltip("Whether or not the door requires all keys to be collected before the player opens it.")] private bool requiresKeysToOpen;
+    [SerializeField, Tooltip("The part of the door that moves up and down")] private GameObject doorPart;
+    [SerializeField, Tooltip("Whether the door will open when it is instantiated into the world.")] private bool openOnStart;
     [SerializeField, Tooltip("The door will not close when any NPCs or the character are within this radius.")] private float distanceToCheckForCharacters = 2f;
     //the localPosition.y of the door at its lowest
     private float closedDoorHeight;
     //the localPosition.y of the door at its highest
-    [SerializeField] private float openedDoorHeight = 10;
-    [SerializeField] private float doorMoveSpeed = 3;
+    [SerializeField, Tooltip("The height of the door when it is opened")] private float openedDoorHeight = 10;
+    [SerializeField, Tooltip("How fast the door moves when it opens.")] private float doorMoveSpeed = 3;
     private float DoorYpos => doorPart.transform.localPosition.y;
     private Vector3 initialDoorPos;
     
     [System.NonSerialized] public bool open;
 
-    //gets the target height of the door based on whether or not the bool open is true
+    /// <summary>
+    /// gets the target height of the door based on whether or not the bool open is true
+    /// </summary>
     private float TargetHeight
     {
         get
@@ -42,6 +44,9 @@ public class Door : MonoBehaviour, IInterractable
         }
     }
 
+    /// <summary>
+    /// changes the door gameobjects position in the world so that its y height matches _YPos
+    /// </summary>
     private void SetDoorHeight(float _YPos) => doorPart.transform.localPosition = new Vector3(doorPart.transform.localPosition.x, _YPos, doorPart.transform.localPosition.z);
 
     private void Start()
@@ -54,12 +59,18 @@ public class Door : MonoBehaviour, IInterractable
         }
     }
 
+    /// <summary>
+    /// toggles the open variable
+    /// </summary>
     public void Interract()
     {
         open = !open;
         StartCoroutine(CloseDoorWhenClearOfCharacters());
     }
 
+    /// <summary>
+    /// close the door if there are no colliders with the "Character" tag nearby
+    /// </summary>
     private IEnumerator CloseDoorWhenClearOfCharacters()
     {
         while(open)
@@ -73,6 +84,9 @@ public class Door : MonoBehaviour, IInterractable
         }
     }
 
+    /// <summary>
+    /// returns whether or not there are colliders with the "Character" tag nearby
+    /// </summary>
     bool NpcsNearby
     {
         get
@@ -91,7 +105,6 @@ public class Door : MonoBehaviour, IInterractable
     
     void FixedUpdate()
     {
-        
         if(npcsCanOpen)
         {
             if(!open && NpcsNearby)

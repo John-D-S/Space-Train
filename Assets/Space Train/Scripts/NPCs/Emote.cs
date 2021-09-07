@@ -16,18 +16,18 @@ namespace NpcAi
 	public class Emote : MonoBehaviour
 	{
 		[Header("-- Emote Materials --")] 
-		[SerializeField] private Material exclaimationMaterial;
-		[SerializeField] private Material questionMaterial;
-		[SerializeField] private Material talkMaterial;
-		[SerializeField] private Material listenMaterial;
-		[SerializeField] private Material whistleMaterial;
+		[SerializeField, Tooltip("The exclaimation material of the emote.")] private Material exclaimationMaterial;
+		[SerializeField, Tooltip("The question material of the emote.")] private Material questionMaterial;
+		[SerializeField, Tooltip("The talk material of the emote.")] private Material talkMaterial;
+		[SerializeField, Tooltip("The listen material of the emote.")] private Material listenMaterial;
+		[SerializeField, Tooltip("The whistle material of the emote.")] private Material whistleMaterial;
 		
 		[Header("-- Emote Components --")]
-		[SerializeField] private MeshRenderer emoteMeshRenderer;
+		[SerializeField, Tooltip("The meshrenderer that displays the emote material.")] private MeshRenderer emoteMeshRenderer;
 
 		[Header("-- Emote Positioning --")] 
-		[SerializeField] private Vector3 position;
-		[SerializeField] private Vector3 rotation;
+		[SerializeField, Tooltip("The target position of the emote gameobject relative to this gameobject.")] private Vector3 position;
+		[SerializeField, Tooltip("The target rotation of the emote gameobject relative to this gameobject.")] private Vector3 rotation;
 
 		private Material EmoteTypeToMat(EmoteType _emoteType)
 		{

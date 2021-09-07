@@ -9,6 +9,9 @@ using UnityEngine;
 
 namespace LevelGeneration
 {
+	/// <summary>
+	/// contains information common to all LevelTiles that belong to a given room.
+	/// </summary>
 	public class Room
 	{
 		public Room(int _roomID, ref List<LevelTile> _occupiedTiles, RoomStyle _roomStyle, LevelGenerator _levelGenerator)
@@ -46,7 +49,10 @@ namespace LevelGeneration
 				_instantiatedGameObjects.Add(Object.Instantiate(propGameObject, instantiationPosition * levelScale + _offset, instantiationRotation));
 			}
 		}
-		
+
+		/// <summary>
+		/// all positions occupied by this room.
+		/// </summary>
 		public List<Vector2Int> OccupiedTilePositions
 		{
 			get
@@ -63,6 +69,9 @@ namespace LevelGeneration
 
 		public List<InstantiationInfo> RoomProps = new List<InstantiationInfo>();
 
+		/// <summary>
+		/// Instantiate all the level tiles and props in the room.
+		/// </summary>
 		public void InstantiateRoomObjects(Vector3 _offset, ref List<GameObject> _instantiatedGameObjects, RoomStyle _defaultStyle)
 		{
 			foreach(LevelTile occupiedTile in OccupiedTiles)

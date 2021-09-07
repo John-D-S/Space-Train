@@ -4,12 +4,18 @@ using UnityEngine;
 
 namespace LevelGeneration
 {
+	/// <summary>
+	/// used to determine whether a level tile is part of a corridor or a room.
+	/// </summary>
 	public enum TileType
 	{
 		Corridor,
 		Room
 	}
 	
+	/// <summary>
+	/// The class which 
+	/// </summary>
 	public class LevelTile
 	{
 		public TileType tileType;
