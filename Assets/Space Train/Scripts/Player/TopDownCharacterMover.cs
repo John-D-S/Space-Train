@@ -42,14 +42,18 @@ namespace SpaceTrain.Player
         // The myCamera, assign to myCamera in scene.
         [SerializeField]
         private Camera Camera;
-        
+
+        // The Rigidbody, attached to the player.
+        private Rigidbody myRigidbody;
+
         // added by john
         [SerializeField, Tooltip("How close you must be to interract with a thing.")] private float interractDistance = 1;
     
-        // Gets the Camera and Input Handeler in Scene.
+        // Gets the Camera, Rigidbody and Input Handler in Scene.
         private void Awake()
         {
             _input = GetComponent<InputHandler>();
+            myRigidbody = GetComponent<Rigidbody>();
             Camera = Camera.main;
         }
 
@@ -139,7 +143,8 @@ namespace SpaceTrain.Player
             // Will get the inputed Vector and will move towards the target.
             targetVector = Quaternion.Euler(0, Camera.gameObject.transform.rotation.eulerAngles.y, 0) * targetVector;
             // Go to the the position of the mouse to turn towards.
-            transform.position += targetVector * speed;
+            //transform.position += targetVector * speed;
+            myRigidbody.MovePosition(transform.position + targetVector * speed);
             // Will output the target vector for if not rotating with the mouse
             return targetVector;
         }

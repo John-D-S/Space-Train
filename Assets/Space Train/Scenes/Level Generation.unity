@@ -5493,6 +5493,10 @@ PrefabInstance:
       propertyPath: Camera
       value: 
       objectReference: {fileID: 267928971}
+    - target: {fileID: 3074612555329495007, guid: 54447c24c7427024c861cc2659192371, type: 3}
+      propertyPath: RunSpeed
+      value: 4.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5600664193258779960, guid: 54447c24c7427024c861cc2659192371, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -5702,8 +5706,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8718778816115506132, guid: 54447c24c7427024c861cc2659192371, type: 3}
-      propertyPath: m_Mass
-      value: 0.5
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8967346655231938845, guid: 54447c24c7427024c861cc2659192371, type: 3}
       propertyPath: m_SizeDelta.x
