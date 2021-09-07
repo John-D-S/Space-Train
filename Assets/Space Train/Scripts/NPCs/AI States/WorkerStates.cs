@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace NpcAi
 {
+	/// <summary>
+	/// The Worker will stand for a random amount of time, occasionally talking to nearby Workers and will start moving.
+	/// If the Worker becomes alert, it will switch to the PassengerAlert state
+	/// </summary>
 	public class WorkerIdle : State
 	{
 		private float timeSinceLastTalked = 0;
@@ -21,7 +25,7 @@ namespace NpcAi
 			timeSinceLastMoved += Time.fixedDeltaTime;
 			timeSinceLastTalked += Time.fixedDeltaTime;
 		}
-
+		
 		private void Talk(ref NpcStateMachine _stateMachine)
 		{
 			if(Random.Range(0,2) == 1)
@@ -70,74 +74,84 @@ namespace NpcAi
 			}
 			return this;
 		}
+	}
+	
+	/// <summary>
+	/// The worker will stand for a random amount of time
+	/// If the passenger becomes alert, it will switch to the PassengerAlert state
+	/// </summary>
+	public class WorkerWalk : State
+	{
+		private AIDestination currentDestination;
         
-		public class WorkerWalk : State
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			private AIDestination currentDestination;
-            
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(_stateMachine.isAlerted)
 			{
-				if(_stateMachine.isAlerted)
-				{
-					return new WorkerAlert();
-				}
-				
-				if(!currentDestination)
-				{
-					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
-					AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
-					if(attemptedDestination != null && _stateMachine.agentController.TryWalkToPosition(attemptedDestination.transform.position))
-					{
-						currentDestination = attemptedDestination;
-					}
-				}
-				else
-				{
-					if(_stateMachine.agentController.HasArrived)
-					{
-						return new WorkerIdle(ref _stateMachine);
-					}
-				}
-				return this;
+				return new WorkerAlert();
 			}
+			
+			if(!currentDestination)
+			{
+				List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
+				AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
+				if(attemptedDestination != null && _stateMachine.agentController.TryWalkToPosition(attemptedDestination.transform.position))
+				{
+					currentDestination = attemptedDestination;
+				}
+			}
+			else
+			{
+				if(_stateMachine.agentController.HasArrived)
+				{
+					return new WorkerIdle(ref _stateMachine);
+				}
+			}
+			return this;
 		}
-		
-		public class WorkerAlert : State
+	}
+	
+	/// <summary>
+	/// the Worker will run to a random destination and switch to the hiding state when it arrives
+	/// </summary>
+	public class WorkerAlert : State
+	{
+		private AIDestination currentDestination;
+        
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			private AIDestination currentDestination;
-            
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(!currentDestination)
 			{
-				if(!currentDestination)
+				List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
+				AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
+				if(_stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
 				{
-					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
-					AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
-					if(_stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
-					{
-						currentDestination = attemptedDestination;
-					}
+					currentDestination = attemptedDestination;
 				}
-				else
-				{
-					if(_stateMachine.agentController.HasArrived)
-					{
-						return new WorkerHide();
-					}
-				}
-				return this;
 			}
+			else
+			{
+				if(_stateMachine.agentController.HasArrived)
+				{
+					return new WorkerHide();
+				}
+			}
+			return this;
 		}
-		
-		public class WorkerHide : State
+	}
+	
+	/// <summary>
+	/// the worker will stand still in the hiding spot until it can see the player, at which point it will run away to a new hiding spot.
+	/// </summary>
+	public class WorkerHide : State
+	{
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(_stateMachine.PlayerIsVisible)
 			{
-				if(_stateMachine.PlayerIsVisible)
-				{
-					return new WorkerAlert();
-				}
-				return this;
+				return new WorkerAlert();
 			}
+			return this;
 		}
 	}
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace LevelGeneration
 {
+    /// <summary>
+    /// Contains information about the wall, floor and door of a given room and also which props spawn in them.
+    /// </summary>
     [CreateAssetMenu(fileName = "New RoomStyle", menuName = "Level Generation/Room Style")]
     public class RoomStyle : ScriptableObject
     {

@@ -8,8 +8,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class AgentController : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed;
-    [SerializeField] private float runSpeed;
+    [SerializeField, Tooltip("How many units per second does this agent walk")] private float walkSpeed;
+    [SerializeField, Tooltip("How many units per second does this agent run")] private float runSpeed;
     private NavMeshAgent agent;
     private Animator animator;
     private bool hasArrived = true;
@@ -39,12 +39,18 @@ public class AgentController : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// stops the agent moving
+    /// </summary>
     public void StopMoving()
     { 
         agent.ResetPath();
         hasArrived = true;
     }
     
+    /// <summary>
+    /// sets the destination position of the agent and makes it run there.
+    /// </summary>
     public bool TryRunToPosition(Vector3 _position)
     {
         agent.speed = runSpeed;
@@ -56,6 +62,9 @@ public class AgentController : MonoBehaviour
         return agent.SetDestination(_position);
     }
 
+    /// <summary>
+    /// sets the destination position of the agent and makes it walk there.
+    /// </summary>
     public bool TryWalkToPosition(Vector3 _position)
     {
         agent.speed = walkSpeed;
@@ -65,11 +74,17 @@ public class AgentController : MonoBehaviour
         return agent.SetDestination(_position);
     }
 
+    /// <summary>
+    /// will keep the agent faced in a direction until it moves.
+    /// </summary>
     public void TurnToFace(Vector3 _position)
     {
         StartCoroutine(TurnTowards(_position, -1));
     }
     
+    /// <summary>
+    /// will rotate the agent to face the position for the given amount of time 
+    /// </summary>
     public void TurnToFace(Vector3 _position, float _timeToKeepTurning)
     {
         StartCoroutine(TurnTowards(_position, _timeToKeepTurning));

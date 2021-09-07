@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace NpcAi
 {
+	/// <summary>
+	/// The passenger will stand for a random amount of time, occasionally talking to nearby passengers and will start moving.
+	/// If the passenger becomes alert, it will switch to the PassengerAlert state
+	/// </summary>
 	public class PassengerIdle : State
 	{
 		private float timeSinceLastTalked = 0;
@@ -70,74 +74,84 @@ namespace NpcAi
 			}
 			return this;
 		}
+	}
+     
+	/// <summary>
+	/// The passenger will stand for a random amount of time, occasionally talking to nearby passengers and will start moving.
+	/// If the passenger becomes alert, it will switch to the PassengerAlert state
+	/// </summary>
+	public class PassengerWalk : State
+	{
+		private AIDestination currentDestination;
         
-		public class PassengerWalk : State
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			private AIDestination currentDestination;
-            
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(_stateMachine.isAlerted)
 			{
-				if(_stateMachine.isAlerted)
-				{
-					return new PassengerAlert();
-				}
-				
-				if(!currentDestination)
-				{
-					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
-					AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
-					if(attemptedDestination != null && _stateMachine.agentController.TryWalkToPosition(attemptedDestination.transform.position))
-					{
-						currentDestination = attemptedDestination;
-					}
-				}
-				else
-				{
-					if(_stateMachine.agentController.HasArrived)
-					{
-						return new PassengerIdle(ref _stateMachine);
-					}
-				}
-				return this;
+				return new PassengerAlert();
 			}
+			
+			if(!currentDestination)
+			{
+				List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
+				AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
+				if(attemptedDestination != null && _stateMachine.agentController.TryWalkToPosition(attemptedDestination.transform.position))
+				{
+					currentDestination = attemptedDestination;
+				}
+			}
+			else
+			{
+				if(_stateMachine.agentController.HasArrived)
+				{
+					return new PassengerIdle(ref _stateMachine);
+				}
+			}
+			return this;
 		}
-		
-		public class PassengerAlert : State
+	}
+	
+	/// <summary>
+	/// the passenger will run to a random destination and switch to the hiding state when it arrives
+	/// </summary>
+	public class PassengerAlert : State
+	{
+		private AIDestination currentDestination;
+        
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			private AIDestination currentDestination;
-            
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(!currentDestination)
 			{
-				if(!currentDestination)
+				List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
+				AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
+				if(attemptedDestination && _stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
 				{
-					List<AIDestination> availableDestinations = AIDestination.aiDestinationsByAllowedCharacters[_stateMachine.NpcIdentity];
-					AIDestination attemptedDestination = availableDestinations[Random.Range(0, availableDestinations.Count)];
-					if(attemptedDestination && _stateMachine.agentController.TryRunToPosition(attemptedDestination.transform.position))
-					{
-						currentDestination = attemptedDestination;
-					}
+					currentDestination = attemptedDestination;
 				}
-				else
-				{
-					if(_stateMachine.agentController.HasArrived)
-					{
-						return new PassengerHide();
-					}
-				}
-				return this;
 			}
+			else
+			{
+				if(_stateMachine.agentController.HasArrived)
+				{
+					return new PassengerHide();
+				}
+			}
+			return this;
 		}
-		
-		public class PassengerHide : State
+	}
+	
+	/// <summary>
+	/// the passenger will stand still in the hiding spot until it can see the player, at which point it will run away to a new hiding spot.
+	/// </summary>
+	public class PassengerHide : State
+	{
+		public override State UpdateState(ref NpcStateMachine _stateMachine)
 		{
-			public override State UpdateState(ref NpcStateMachine _stateMachine)
+			if(_stateMachine.ObjectIsVisibleFromPos(NpcStateMachine.playerIdentity.gameObject))
 			{
-				if(_stateMachine.ObjectIsVisibleFromPos(NpcStateMachine.playerIdentity.gameObject))
-				{
-					return new PassengerAlert();
-				}
-				return this;
+				return new PassengerAlert();
 			}
+			return this;
 		}
 	}
 }

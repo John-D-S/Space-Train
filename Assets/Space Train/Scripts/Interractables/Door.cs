@@ -105,6 +105,7 @@ public class Door : MonoBehaviour, IInterractable
     
     void FixedUpdate()
     {
+        // open the door for npcs if the door is closed and there are npcs nearby.
         if(npcsCanOpen)
         {
             if(!open && NpcsNearby)

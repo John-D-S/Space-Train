@@ -22,16 +22,16 @@ namespace NpcAi
 		public AgentController agentController;
 		[SerializeField, Tooltip("The Npc will only be aware of other npcs and the player if they are within this distance.")] private float nearbyDistance = 16;
 		public float NearbyDistance => nearbyDistance;
-		[SerializeField] private CharacterIdentity npcIdentity = CharacterIdentity.Passenger;
+		[SerializeField, Tooltip("The Identity of the NPC. This determines how it will behave")] private CharacterIdentity npcIdentity = CharacterIdentity.Passenger;
 		public CharacterIdentity NpcIdentity => npcIdentity;
-		[SerializeField] private float averageTimeBetweenTalks;
+		[SerializeField, Tooltip("How often NPC talks")] private float averageTimeBetweenTalks;
 		public float AverageTimeBetweenTalks => averageTimeBetweenTalks;
-		[SerializeField] private float timeBetweenWalks;
+		[SerializeField, Tooltip("How long between walking does the npc stand still at their destination.")] private float timeBetweenWalks;
 		public float TimeBetweenWalks => timeBetweenWalks;
 		
 		[Header("-- Ai Sight Settings --")]
-		[SerializeField] private float fieldOfView;
-		[SerializeField] private float eyeHeight;
+		[SerializeField, Tooltip("determines what the npc can see infront of them.")] private float fieldOfView;
+		[SerializeField, Tooltip("how high the eye is from the origin of the NPC")] private float eyeHeight;
 
 		[System.NonSerialized] public float suspicionOfPlayer;
 		[SerializeField] private float timeUntilAlert;
@@ -43,6 +43,9 @@ namespace NpcAi
 		private State currentState;
 		public State CurrentState => currentState;
 
+		/// <summary>
+		/// whether the player is visible from the NPC's current position
+		/// </summary>
 		public bool PlayerIsVisible
 		{
 			get
@@ -52,6 +55,9 @@ namespace NpcAi
 			}
 		}
 		
+		/// <summary>
+		/// whether the given object is visible from the NPC's current position, and is within their field of view
+		/// </summary>
 		public bool ObjectVisibleInFov(GameObject _gameObject)
 		{
 			if(_gameObject)
@@ -64,6 +70,9 @@ namespace NpcAi
 			return false;
 		}
 
+		/// <summary>
+		/// whether the given gameObject is visible from the NPC's current position
+		/// </summary>
 		public bool ObjectIsVisibleFromPos(GameObject _gameObject)
 		{
 			if(Vector3.Distance(transform.position, _gameObject.transform.position) < nearbyDistance)
@@ -81,6 +90,9 @@ namespace NpcAi
 			return false;
 		}
 
+		/// <summary>
+		/// updates all the Npcs within nearbyDistance from this NPC
+		/// </summary>
 		private void UpdateNearbyNpCs()
 		{
 			List<NpcStateMachine> currentNearbyNPCs = new List<NpcStateMachine>();
@@ -98,6 +110,9 @@ namespace NpcAi
 			nearbyNPCs = currentNearbyNPCs;
 		}
 
+		/// <summary>
+		/// continually calles UpdateNearbyNpcs after a bit, instead of every frame
+		/// </summary>
 		private IEnumerator ContinuallyUpdateNearbyNpCs()
 		{
 			while(alive)
@@ -108,6 +123,10 @@ namespace NpcAi
 			nearbyNPCs.Clear();
 		}
 
+		/// <summary>
+		/// out of nearbyNPCs, update currentlyVisibleNpcs to include the ones that are visible at this point in time.
+		/// </summary>
+		/// <returns></returns>
 		private IEnumerator ContinuallyUpdateVisibleNpCs()
 		{
 			while(alive)
@@ -136,6 +155,7 @@ namespace NpcAi
 			{
 				playerIdentity = GameObject.FindWithTag("Player").GetComponent<IdentityHandler>();
 			}
+			//start the coroutines that continually update 
 			StartCoroutine(ContinuallyUpdateNearbyNpCs());
 			StartCoroutine(ContinuallyUpdateVisibleNpCs());
 			NpcStateMachine thisNpc = this;
